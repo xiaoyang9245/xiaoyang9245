@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新世界·禁忌领域</title>
+    <link rel="icon" type="image/png" href="newworld-logo.png">
+    <style>
+        /* 与400页面完全相同的CSS，此处省略 */
+                :root {
+            --pixel-gold: #e8c34b;
+            --text-bright: #f5f0e0;
+            --glow-gold: rgba(232,195,75,0.55);
+            --mc-panel-bg: #2a2218;
+            --mc-border-light: #6b5a3e;
+            --mc-border-dark: #1a1208;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d0a05;
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; padding: 16px;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; color: var(--text-bright);
+            background-image:
+                repeating-linear-gradient(0deg, rgba(80,60,30,0.08) 0px, rgba(80,60,30,0.08) 1px, transparent 1px, transparent 8px),
+                repeating-linear-gradient(90deg, rgba(80,60,30,0.08) 0px, rgba(80,60,30,0.08) 1px, transparent 1px, transparent 8px),
+                radial-gradient(ellipse at 50% 0%, rgba(180,140,60,0.1) 0%, transparent 60%);
+        }
+        .error-container {
+            width: 100%; max-width: 600px; text-align: center; position: relative; z-index: 10;
+            background: var(--mc-panel-bg);
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px);
+            border: 5px solid var(--mc-border-dark);
+            border-top-color: var(--mc-border-light); border-left-color: var(--mc-border-light);
+            border-right-color: #3a2a18; border-bottom-color: #3a2a18;
+            box-shadow: 0 0 0 3px #0a0804, 0 0 0 8px var(--mc-border-dark), 0 0 20px rgba(0,0,0,0.7), inset 0 0 30px rgba(0,0,0,0.4), inset 2px 2px 0 rgba(255,255,255,0.03), inset -2px -2px 0 rgba(0,0,0,0.2);
+            padding: 40px 30px;
+        }
+        .error-icon { font-size: 80px; margin-bottom: 20px; filter: drop-shadow(4px 4px 0 #0a0804) drop-shadow(0 0 15px var(--glow-gold)); animation: floatIcon 3s ease-in-out infinite; }
+        @keyframes floatIcon { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .error-code { font-size: 48px; font-weight: bold; color: var(--pixel-gold); letter-spacing: 0.2em; text-shadow: 4px 4px 0 #1a1208, 0 0 20px var(--glow-gold); margin-bottom: 10px; font-family: 'Courier New', monospace; }
+        .error-title { font-size: 20px; color: #d0c0a0; letter-spacing: 0.15em; margin-bottom: 20px; text-shadow: 2px 2px 0 #1a1208; }
+        .error-desc { font-size: 14px; color: #b0a080; line-height: 1.8; margin-bottom: 30px; border-top: 2px dashed #4a3a2a; border-bottom: 2px dashed #4a3a2a; padding: 15px 0; }
+        .error-desc em { color: #e8c34b; font-style: normal; text-shadow: 0 0 6px rgba(232,195,75,0.4); }
+        .home-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 15px; font-weight: bold; letter-spacing: 0.1em;
+            cursor: pointer; text-decoration: none; transition: all 0.08s ease; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            border: 3px solid #1a1208; border-top-color: #b0a080; border-left-color: #b0a080; border-right-color: #4a3a2a; border-bottom-color: #2a1a0a;
+            box-shadow: inset 1px 1px 0 rgba(255,255,255,0.15), inset -2px -2px 0 rgba(0,0,0,0.3), 0 4px 0 #1a1208, 0 6px 0 rgba(0,0,0,0.4);
+            background: #4a5a3a; background-image: linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.04) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.04) 75%);
+            background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0; color: #d0e8c0; text-shadow: 2px 2px 0 #1a2a0a; position: relative;
+        }
+        .home-btn:hover { background: #5a6a4a; color: #e0f8d0; border-top-color: #d0c0a0; border-left-color: #d0c0a0; transform: translateY(-1px); box-shadow: inset 1px 1px 0 rgba(255,255,255,0.25), inset -2px -2px 0 rgba(0,0,0,0.3), 0 5px 0 #1a1208, 0 7px 0 rgba(0,0,0,0.4), 0 0 20px rgba(90,158,255,0.3); }
+        .home-btn:active { transform: translateY(3px); border-top-color: #4a3a2a; border-left-color: #4a3a2a; border-right-color: #b0a080; border-bottom-color: #b0a080; box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px -1px 0 rgba(255,255,255,0.08), 0 1px 0 #1a1208; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">🚫</div>
+        <div class="error-code">403</div>
+        <div class="error-title">◆ 禁忌领域 ◆</div>
+        <div class="error-desc">
+            前方是<em>受贤者封印的禁地</em>，你的权限尚不足以踏入。<br>
+            或许你误入了高塔的顶层，或试图窥探不属于你的卷宗。<br>
+            未经许可的探访者，请止步于此。
+        </div>
+        <a href="./" class="home-btn">◂ 返回冒险者终端</a>
+    </div>
+</body>
+</html>
