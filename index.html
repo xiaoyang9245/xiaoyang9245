@@ -641,7 +641,7 @@ async function doLogin() {
             const statusText = document.getElementById('status-text');
             const playerTag = document.getElementById('player-tag');
             const playerText = document.getElementById('player-text');
-            const serverAddress = 'mcawa.xin';
+            const serverAddress = 'w50.kkwmc.cn:2392';
             async function checkServerStatus() {
                 function showOnline(online, max) { statusDot.style.background = '#5a5'; statusDot.style.boxShadow = '0 0 10px #5a5'; statusText.textContent = '生机勃勃'; if (typeof online === 'number' && online > 0 && typeof max === 'number' && max > 0) { playerTag.style.display = 'flex'; playerText.textContent = `${online} / ${max}`; if (online >= max) playerText.style.color = '#ff9999'; else if (online > max * 0.7) playerText.style.color = '#ffcc66'; else playerText.style.color = '#99ff99'; } else if (typeof online === 'number' && online > 0) { playerTag.style.display = 'flex'; playerText.textContent = `${online} 人在线`; playerText.style.color = '#99ff99'; } else { playerTag.style.display = 'flex'; playerText.textContent = '旅者隐匿'; playerText.style.color = '#888'; } }
                 function showOffline() { statusDot.style.background = '#c55'; statusDot.style.boxShadow = '0 0 10px #c55'; statusText.textContent = '黯蚀笼罩'; playerTag.style.display = 'none'; }
