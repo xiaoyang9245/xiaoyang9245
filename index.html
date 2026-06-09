@@ -1378,32 +1378,53 @@
                 modalPCL.classList.add('active');
             });
 
-            // 分季节标题轮换
-            const seasonTitles = {
-                spring: ['星牧·初芽','星牧·绿潮','星牧·花咒','星牧·春醒','星牧·林径','星牧·小晴空','星牧·荆棘冠','星牧·复苏歌','星牧·鹿鸣涧','星牧·迷雾种','星牧·风之信标','星牧·生命祭坛','星牧·原初之息','星牧·翠色协议','星牧·破晓远征'],
-                summer: ['星牧·炎息','星牧·沙暴','星牧·熔核','星牧·烈芒','星牧·雷鼓','星牧·火蛇舞','星牧·小晴空','星牧·龙巢热','星牧·雷暴核','星牧·蝉剑鸣','星牧·烈日祭坛','星牧·赤沙遗迹','星牧·炎魔之眼','星牧·雷云堡垒','星牧·狂战士营'],
-                autumn: ['星牧·金雨','星牧·枯骨','星牧·猎月','星牧·丰碑','星牧·锈刃','星牧·亡者醉','星牧·金币叶','星牧·小晴空','星牧·凋零颂','星牧·黄昏猎','星牧·丰收祭典','星牧·魂引灯笼','星牧·堕落王座','星牧·秘银落叶','星牧·暮光决斗'],
-                winter: ['星牧·霜卫','星牧·永夜','星牧·寒渊','星牧·冰棘','星牧·寂塔','星牧·冰龙息','星牧·小晴空','星牧·极光剑','星牧·雪怪嚎','星牧·落幕曲','星牧·冰封王座','星牧·凛冬领主','星牧·永夜庇护所','星牧·极光魔杖','星牧·最终誓约']
-            };
-            let currentTitleIndex = 0;
-            function getCurrentSeason() {
-                const m = new Date().getMonth() + 1;
-                if (m >= 3 && m <= 5) return 'spring';
-                if (m >= 6 && m <= 8) return 'summer';
-                if (m >= 9 && m <= 11) return 'autumn';
-                return 'winter';
-            }
-            function rotateTitle() {
-                const currentSeason = getCurrentSeason();
-                const titles = seasonTitles[currentSeason];
-                mainTitle.style.opacity = 0;
-                setTimeout(() => {
-                    currentTitleIndex = (currentTitleIndex + 1) % titles.length;
-                    mainTitle.textContent = titles[currentTitleIndex];
-                    mainTitle.style.opacity = 1;
-                }, 600);
-            }
-            setInterval(rotateTitle, 5000);
+// 分季节标题轮换（不重复随机 + 2秒间隔）
+const seasonTitles = {
+    spring: ['星牧·初芽','星牧·绿潮','星牧·花咒','星牧·春醒','星牧·林径','星牧·小晴空','星牧·荆棘冠','星牧·复苏歌','星牧·鹿鸣涧','星牧·迷雾种','星牧·风之信标','星牧·生命祭坛','星牧·原初之息','星牧·翠色协议','星牧·破晓远征'],
+    summer: ['星牧·炎息','星牧·沙暴','星牧·熔核','星牧·烈芒','星牧·雷鼓','星牧·火蛇舞','星牧·小晴空','星牧·龙巢热','星牧·雷暴核','星牧·蝉剑鸣','星牧·烈日祭坛','星牧·赤沙遗迹','星牧·炎魔之眼','星牧·雷云堡垒','星牧·狂战士营'],
+    autumn: ['星牧·金雨','星牧·枯骨','星牧·猎月','星牧·丰碑','星牧·锈刃','星牧·亡者醉','星牧·金币叶','星牧·小晴空','星牧·凋零颂','星牧·黄昏猎','星牧·丰收祭典','星牧·魂引灯笼','星牧·堕落王座','星牧·秘银落叶','星牧·暮光决斗'],
+    winter: ['星牧·霜卫','星牧·永夜','星牧·寒渊','星牧·冰棘','星牧·寂塔','星牧·冰龙息','星牧·小晴空','星牧·极光剑','星牧·雪怪嚎','星牧·落幕曲','星牧·冰封王座','星牧·凛冬领主','星牧·永夜庇护所','星牧·极光魔杖','星牧·最终誓约']
+};
+
+// 存储每个季节剩余未显示的标题索引
+const remainingIndexes = {
+    spring: [],
+    summer: [],
+    autumn: [],
+    winter: []
+};
+
+function getCurrentSeason() {
+    const m = new Date().getMonth() + 1;
+    if (m >= 3 && m <= 5) return 'spring';
+    if (m >= 6 && m <= 8) return 'summer';
+    if (m >= 9 && m <= 11) return 'autumn';
+    return 'winter';
+}
+
+function rotateTitle() {
+    const currentSeason = getCurrentSeason();
+    const titles = seasonTitles[currentSeason];
+    
+    // 如果当前季节的索引池为空，重新填充所有索引
+    if (remainingIndexes[currentSeason].length === 0) {
+        remainingIndexes[currentSeason] = Array.from({ length: titles.length }, (_, i) => i);
+    }
+    
+    // 从剩余索引中随机取出一个（取出后从数组删除，保证不重复）
+    const randomPos = Math.floor(Math.random() * remainingIndexes[currentSeason].length);
+    const selectedIndex = remainingIndexes[currentSeason].splice(randomPos, 1)[0];
+    
+    // 保留原淡入淡出动画
+    mainTitle.style.opacity = 0;
+    setTimeout(() => {
+        mainTitle.textContent = titles[selectedIndex];
+        mainTitle.style.opacity = 1;
+    }, 600);
+}
+
+// 改为2000毫秒 = 2秒切换一次
+setInterval(rotateTitle, 2000);
         })();
     </script>
 </body>
