@@ -936,7 +936,9 @@
                 }
             };
             const msalInstance = new msal.PublicClientApplication(msalConfig);
-            const loginRequest = { scopes: ["XboxLive.signin", "offline_access"] };
+// ✅ 新的正确权限（2026.6.11后生效）
+            const loginRequest = { scopes: ["XboxLive.signin.user", "offline_access"] };
+
             let currentMcProfile = null;
             let currentMsUser = null;
             const mcLoginBtn = document.getElementById('mc-login-btn');
