@@ -928,173 +928,121 @@
             }
             requestAnimationFrame(drawStars);
 
-            const msalConfig = {
-                auth: {
-                    clientId: "bb0e2641-02dd-4298-9e5d-0ba8c069b28b",
-                    authority: "https://login.microsoftonline.com/common/",
-                    redirectUri: "https://xiaoyang9245.github.io/xiaoyang9245/"
-                }
-            };
-            const msalInstance = new msal.PublicClientApplication(msalConfig);
-// ✅ 新的正确权限（2026.6.11后生效）
-            const loginRequest = { scopes: ["XboxLive.signin.user", "offline_access"] };
+const msalConfig = {
+    auth: {
+        clientId: "bb0e2641-02dd-4298-9e5d-0ba8c069b28b",
+        authority: "https://login.microsoftonline.com/common/",
+        redirectUri: "https://xiaoyang9245.github.io/xiaoyang9245/" // 必须和Azure后台完全一致（含末尾斜杠）
+    }
+};
+const msalInstance = new msal.PublicClientApplication(msalConfig);
+const loginRequest = { scopes: ["XboxLive.signin", "offline_access"] }; // 修正Xbox权限
+let currentMcProfile = null;
+let currentMsUser = null;
+const mcLoginBtn = document.getElementById('mc-login-btn');
+const userCorner = document.getElementById('user-corner');
+const userAvatar = document.getElementById('user-avatar');
+const userNameSpan = document.getElementById('user-name');
+const successMessage = document.getElementById('success-message');
+const successButtons = document.getElementById('success-buttons');
+const dropdownArrow = document.getElementById('user-dropdown-arrow');
+const dropdownMenu = document.getElementById('user-dropdown');
 
-            let currentMcProfile = null;
-            let currentMsUser = null;
-            const mcLoginBtn = document.getElementById('mc-login-btn');
-            const userCorner = document.getElementById('user-corner');
-            const userAvatar = document.getElementById('user-avatar');
-            const userNameSpan = document.getElementById('user-name');
-            const successMessage = document.getElementById('success-message');
-            const successButtons = document.getElementById('success-buttons');
-            const dropdownArrow = document.getElementById('user-dropdown-arrow');
-            const dropdownMenu = document.getElementById('user-dropdown');
-            const savedState = localStorage.getItem('mc_auth');
-            if (savedState) {
-                try {
-                    const state = JSON.parse(savedState);
-                    if (state.mcProfile) {
-                        currentMcProfile = state.mcProfile;
-                        currentMsUser = state.msUser;
-                        updateUserUI();
-                    }
-                } catch(e) {
-                    localStorage.removeItem('mc_auth');
-                }
-            }
-            function updateUserUI() {
-                if (currentMcProfile && currentMcProfile.name) {
-                    userAvatar.src = `https://crafatar.com/avatars/${currentMcProfile.id}?size=28&overlay`;
-                    userNameSpan.textContent = currentMcProfile.name;
-                    userCorner.style.display = 'flex';
-                    mcLoginBtn.style.display = 'none';
-                } else {
-                    userCorner.style.display = 'none';
-                    mcLoginBtn.style.display = 'inline-flex';
-                }
-            }
-            function refreshAvatar() {
-                if (currentMcProfile && currentMcProfile.id) {
-                    userAvatar.src = `https://crafatar.com/avatars/${currentMcProfile.id}?size=28&overlay&t=${Date.now()}`;
-                }
-            }
-            function copyUUID() {
-                if (currentMcProfile && currentMcProfile.id) {
-                    navigator.clipboard.writeText(currentMcProfile.id).then(() => {
-                        alert('UUID已复制到剪贴板');
-                    }).catch(() => {
-                        prompt('请手动复制UUID', currentMcProfile.id);
-                    });
-                }
-            }
-            dropdownArrow.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-            });
-            document.addEventListener('click', (e) => {
-                if (!userCorner.contains(e.target)) {
-                    dropdownMenu.classList.remove('show');
-                }
-            });
-            document.getElementById('refresh-avatar-btn').addEventListener('click', () => {
-                refreshAvatar();
-                dropdownMenu.classList.remove('show');
-            });
-            document.getElementById('copy-uuid-btn').addEventListener('click', () => {
-                copyUUID();
-                dropdownMenu.classList.remove('show');
-            });
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                doLogout();
-                dropdownMenu.classList.remove('show');
-            });
-            async function getXboxToken(msAccessToken) {
-                const res = await fetch("https://user.auth.xboxlive.com/user/authenticate", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        Properties: {
-                            AuthMethod: "RPS",
-                            SiteName: "user.auth.xboxlive.com",
-                            RpsTicket: `d=${msAccessToken}`
-                        },
-                        RelyingParty: "http://auth.xboxlive.com",
-                        TokenType: "JWT"
-                    })
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.XErr || "Xbox认证失败");
-                return data.Token;
-            }
-            async function getXstsToken(xblToken) {
-                const res = await fetch("https://xsts.auth.xboxlive.com/xsts/authorize", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        Properties: { SandboxId: "RETAIL", UserTokens: [xblToken] },
-                        RelyingParty: "rp://api.minecraftservices.com/",
-                        TokenType: "JWT"
-                    })
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.XErr || "XSTS认证失败");
-                return { token: data.Token, userHash: data.DisplayClaims.xui[0].uhs };
-            }
-            async function getMinecraftToken(userHash, xstsToken) {
-                const res = await fetch("https://api.minecraftservices.com/authentication/login_with_xbox", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ identityToken: `XBL3.0 x=${userHash};${xstsToken}` })
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Minecraft令牌获取失败");
-                return data.access_token;
-            }
-            async function getMinecraftProfile(mcToken) {
-                const res = await fetch("https://api.minecraftservices.com/minecraft/profile", {
-                    headers: { "Authorization": `Bearer ${mcToken}` }
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "玩家档案获取失败");
-                return data;
-            }
-            async function doLogin() {
-                try {
-                    const msResponse = await msalInstance.loginPopup(loginRequest);
-                    const msToken = msResponse.accessToken;
-                    const graphRes = await fetch("https://graph.microsoft.com/v1.0/me", { headers: { Authorization: `Bearer ${msToken}` } });
-                    const msData = await graphRes.json();
-                    currentMsUser = { displayName: msData.displayName, id: msData.id, email: msData.userPrincipalName };
-                    const xblToken = await getXboxToken(msToken);
-                    const xstsData = await getXstsToken(xblToken);
-                    const mcToken = await getMinecraftToken(xstsData.userHash, xstsData.token);
-                    const profile = await getMinecraftProfile(mcToken);
-                    currentMcProfile = { name: profile.name, id: profile.id };
-                    localStorage.setItem('mc_auth', JSON.stringify({ mcProfile: currentMcProfile, msUser: currentMsUser }));
+// ========== 🔴 核心修复：处理重定向登录回调 ==========
+msalInstance.handleRedirectPromise()
+    .then(async (response) => {
+        if (response) {
+            // 重定向登录成功，复用原有登录逻辑
+            await processLoginResponse(response);
+        }
+        // 无论是否重定向，都先检查本地存储的登录态
+        const savedState = localStorage.getItem('mc_auth');
+        if (savedState) {
+            try {
+                const state = JSON.parse(savedState);
+                if (state.mcProfile) {
+                    currentMcProfile = state.mcProfile;
+                    currentMsUser = state.msUser;
                     updateUserUI();
-                } catch (err) {
-                    console.error(err);
-                    let friendlyMsg = "";
-                    const msg = err.message || "";
-                    const code = err.errorCode || "";
-                    if (msg.includes("User cancelled") || code === "user_cancelled") {
-                        friendlyMsg = "你已取消登录，请重新尝试。";
-                    } else if (msg.includes("Xbox认证失败") || msg.includes("XErr")) {
-                        friendlyMsg = "Xbox 认证失败，请确保你的微软账号拥有 Minecraft Java 版。";
-                    } else if (msg.includes("XSTS认证失败")) {
-                        friendlyMsg = "XSTS 认证失败，请稍后重试。";
-                    } else if (msg.includes("Minecraft令牌密钥获取失败")) {
-                        friendlyMsg = "无法获取 Minecraft 令牌密钥，请确保你的账号已购买 Minecraft Java 版。";
-                    } else if (msg.includes("玩家档案获取失败")) {
-                        friendlyMsg = "无法获取玩家档案，请确保你的账号已迁移并拥有 Java 版。";
-                    } else if (msg.includes("NetworkError") || msg.includes("fetch")) {
-                        friendlyMsg = "网络错误，请检查网络后重试。";
-                    } else {
-                        friendlyMsg = "登录失败：" + msg;
-                    }
-                    alert(friendlyMsg);
                 }
+            } catch(e) {
+                localStorage.removeItem('mc_auth');
             }
+        }
+    })
+    .catch(err => {
+        console.error("重定向登录失败:", err);
+        alert("登录失败：请刷新页面重试");
+    });
+
+// ========== 🔴 提取公共登录处理逻辑 ==========
+async function processLoginResponse(msResponse) {
+    const msToken = msResponse.accessToken;
+    const graphRes = await fetch("https://graph.microsoft.com/v1.0/me", { 
+        headers: { Authorization: `Bearer ${msToken}` } 
+    });
+    const msData = await graphRes.json();
+    currentMsUser = { 
+        displayName: msData.displayName, 
+        id: msData.id, 
+        email: msData.userPrincipalName 
+    };
+    const xblToken = await getXboxToken(msToken);
+    const xstsData = await getXstsToken(xblToken);
+    const mcToken = await getMinecraftToken(xstsData.userHash, xstsData.token);
+    const profile = await getMinecraftProfile(mcToken);
+    currentMcProfile = { name: profile.name, id: profile.id };
+    localStorage.setItem('mc_auth', JSON.stringify({ 
+        mcProfile: currentMcProfile, 
+        msUser: currentMsUser 
+    }));
+    updateUserUI();
+}
+
+// ========== 🔴 优化登录函数：弹窗失败自动降级为重定向 ==========
+async function doLogin() {
+    if (mcLoginBtn.disabled) return;
+    mcLoginBtn.disabled = true;
+    mcLoginBtn.textContent = "正在认证…";
+
+    try {
+        // 先尝试弹窗登录
+        const msResponse = await msalInstance.loginPopup(loginRequest);
+        await processLoginResponse(msResponse);
+    } catch (err) {
+        console.error(err);
+        // 弹窗被拦截/失败时，自动使用重定向登录
+        if (err.errorCode === "popup_window_error" || 
+            err.errorCode === "user_interaction_required" ||
+            err.message.includes("popup")) {
+            await msalInstance.loginRedirect(loginRequest);
+            return; // 重定向后页面会刷新，无需后续处理
+        }
+        // 原有错误提示
+        let friendlyMsg = "";
+        const msg = err.message || "";
+        const code = err.errorCode || "";
+        if (msg.includes("User cancelled") || code === "user_cancelled") {
+            friendlyMsg = "你已取消登录，请重新尝试。";
+        } else if (msg.includes("Xbox认证失败") || msg.includes("XErr")) {
+            friendlyMsg = "Xbox 认证失败，请确保你的微软账号拥有 Minecraft Java 版。";
+        } else if (msg.includes("XSTS认证失败")) {
+            friendlyMsg = "XSTS 认证失败，请稍后重试。";
+        } else if (msg.includes("Minecraft令牌")) {
+            friendlyMsg = "无法获取 Minecraft 令牌，请确保你的账号已购买 Minecraft Java 版。";
+        } else if (msg.includes("玩家档案")) {
+            friendlyMsg = "无法获取玩家档案，请确保你的账号已迁移并拥有 Java 版。";
+        } else if (msg.includes("NetworkError") || msg.includes("fetch")) {
+            friendlyMsg = "网络错误，请检查网络后重试。";
+        } else {
+            friendlyMsg = "登录失败：" + msg;
+        }
+        alert(friendlyMsg);
+    } finally {
+        mcLoginBtn.disabled = false;
+        mcLoginBtn.textContent = "⛏️ 冒险者认证";
+    }
+}
             function doLogout() {
                 localStorage.removeItem('mc_auth');
                 currentMcProfile = null;
