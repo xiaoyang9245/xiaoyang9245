@@ -10,8 +10,6 @@
     <meta name="author" content="xiaoyang9245和原初大陆的各位">
     <meta name="robots" content="index, follow">
     <link rel="icon" type="image/svg+xml" href="newworld-logo.svg">
-    <!-- ✅ 改用国内可访问的MSAL CDN（永久稳定） -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/msal-browser/3.26.0/js/msal-browser.min.js"></script>
     <style>
         :root {
             --bg-main: #12141d;
@@ -273,13 +271,6 @@
         .btn-qq:hover:not(:disabled) {
             background: linear-gradient(135deg, #b96a98, #a25482);
         }
-        .btn-mc {
-            background: linear-gradient(135deg, #3b7c60, #2e654d);
-            color: #e4f8ee;
-        }
-        .btn-mc:hover:not(:disabled) {
-            background: linear-gradient(135deg, #488c6e, #387359);
-        }
         .btn-portal.charging {
             animation: btnChargeMcBlue 0.35s ease-in-out infinite;
             background: #72a8ff !important;
@@ -305,92 +296,6 @@
             border-left: 2px solid var(--border);
             padding-left: 12px;
             white-space: nowrap;
-        }
-        .mc-login-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .mc-login-btn {
-            min-width: auto;
-            padding: 8px 20px;
-            font-size: 13px;
-        }
-        .user-corner {
-            position: absolute;
-            top: 8px;
-            right: 14px;
-            z-index: 20;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            background: rgba(18, 20, 29, 0.75);
-            padding: 4px 12px 4px 8px;
-            border: 1px solid var(--primary);
-            border-radius: 999px;
-            box-shadow: 0 0 10px rgba(114, 168, 255, 0.25);
-            backdrop-filter: blur(6px);
-        }
-        .user-corner .avatar-small {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #3a4258;
-            border: 1px solid var(--primary);
-        }
-        .user-corner .username {
-            font-size: 12px;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .dropdown-arrow {
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--primary);
-            margin-left: 2px;
-            user-select: none;
-            transition: transform 0.2s;
-        }
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 6px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 4px 0;
-            min-width: 130px;
-            box-shadow: var(--shadow-soft);
-            display: none;
-            z-index: 30;
-        }
-        .user-dropdown.show {
-            display: block;
-        }
-        .user-dropdown button {
-            display: block;
-            width: 100%;
-            background: transparent;
-            border: none;
-            padding: 8px 16px;
-            color: var(--text-main);
-            font-size: 12px;
-            font-family: inherit;
-            text-align: left;
-            cursor: pointer;
-            transition: background 0.2s;
-            white-space: nowrap;
-        }
-        .user-dropdown button:hover {
-            background: rgba(114, 168, 255, 0.15);
-        }
-        .user-dropdown .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 4px 8px;
         }
         .social-links {
             display: flex;
@@ -651,24 +556,6 @@
             background: linear-gradient(135deg, #3a6fc9, #2d5bb8);
             color: #e6f0ff;
         }
-        .secret-input {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            width: 100%;
-            margin: 12px 0;
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 14px;
-            text-align: center;
-            letter-spacing: 0.1em;
-            border-radius: var(--radius-sm);
-        }
-        .secret-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(114, 168, 255, 0.3);
-        }
         .season-indicator {
             display: flex;
             justify-content: center;
@@ -703,12 +590,6 @@
             .season-indicator { gap: 8px; }
             .season-card { flex-basis: 60px; font-size: 10px; }
             .season-emoji { font-size: 18px; }
-        }
-        @media (max-width: 768px) {
-            #mobile-easter-egg { display: block; }
-        }
-        @media (min-width: 769px) {
-            #mobile-easter-egg { display: none; }
         }
         @media(max-width:1100px) {
             .pixel-grid { grid-template-columns: repeat(3, 1fr); }
@@ -745,25 +626,11 @@
             .pixel-crt { width: 70%; max-width: 1800px; }
             .main-screen { padding: 28px 40px; }
         }
-        #mobile-easter-egg {
-            background: var(--primary);
-        }
     </style>
 </head>
 <body>
     <canvas id="star-canvas"></canvas>
     <div class="pixel-crt" id="terminal">
-        <div id="user-corner" class="user-corner" style="display: none;">
-            <img id="user-avatar" class="avatar-small" src="" alt="玩家头像" onerror="this.src='https://crafatar.com/avatars/00000000000000000000000000000000?size=32&default=MHF_Steve'">
-            <span id="user-name" class="username"></span>
-            <span id="user-dropdown-arrow" class="dropdown-arrow">▽</span>
-            <div id="user-dropdown" class="user-dropdown">
-                <button id="refresh-avatar-btn">🔄 刷新头像</button>
-                <button id="copy-uuid-btn">📋 复制UUID</button>
-                <div class="divider"></div>
-                <button id="logout-btn">🚪 登出</button>
-            </div>
-        </div>
         <div class="main-screen">
             <div class="header-block">
                 <div class="scanline-text">[ 冒险者终端 // 连接到：小晴空 ]</div>
@@ -795,9 +662,6 @@
                 <div class="pixel-card" data-index="8"><div class="card-icon-block">🦸</div><div class="card-title-pixel">角色神形</div><div class="card-divider-pixel"></div><p class="card-desc">化身获得真正灵魂。皮肤层次分明，披风猎猎飘扬，铠甲闪烁冷光。<em>动作充满仪式感</em>，史诗般的气质。</p><div class="mod-list"><div class="mod-list-title">▸ 化身觉醒的形魂法典</div><div class="mod-list-items"><span class="mod-tag">3D皮肤层</span><span class="mod-tag">实体模型特性</span><span class="mod-tag">实体纹理特性</span><span class="mod-tag">实体渲染优化</span><span class="mod-tag">飘扬披风</span><span class="mod-tag">万用皮肤</span><span class="mod-tag">ClientID</span><span class="mod-tag">FeatherMorph</span><span class="mod-tag">FemaleGender</span></div></div><span class="card-codename"># 化身觉醒</span></div>
                 <div class="pixel-card" data-index="9"><div class="card-icon-block">👁️</div><div class="card-title-pixel">灵智界面</div><div class="card-divider-pixel"></div><p class="card-desc">情报之灵将知识编织于视野边缘。鼠标轻悬洞察前世今生，背包学会自我整理。<em>信息如流水自然呈现</em>。</p><div class="mod-list"><div class="mod-list-title">▸ 情报之灵的编织法典</div><div class="mod-list-items"><span class="mod-tag">JEI</span><span class="mod-tag">玉</span><span class="mod-tag">一键背包</span><span class="mod-tag">投影</span><span class="mod-tag">鼠标手势</span><span class="mod-tag">提示框滚动</span><span class="mod-tag">手持信息</span><span class="mod-tag">食物效果</span><span class="mod-tag">更好F3</span><span class="mod-tag">模组菜单</span></div></div><span class="card-codename"># 灵智之眼</span></div>
             </div>
-            <div class="mc-login-section">
-                <button id="mc-login-btn" class="pixel-btn btn-mc mc-login-btn">⛏️ 冒险者认证</button>
-            </div>
             <div class="social-links">
                 <a class="social-btn bilibili" href="https://space.bilibili.com/" target="_blank" title="旅团档案库·B站">B</a>
                 <span class="social-btn qq-hint" id="qq-hint-btn" title="点击此处，将指引你前往上方旅团通讯阵列">📡</span>
@@ -813,14 +677,12 @@
             <div class="footer-pixel">◆ 星牧 · 原初大陆 ◆  |  * 纯净生存 · 极致美化 *  |  ◆ 愿像素之光指引前路 ◆</div>
         </div>
     </div>
-    <div id="mobile-easter-egg" style="position: fixed; bottom: 10px; right: 10px; width: 20px; height: 20px; z-index: 999; opacity: 0.05; background: var(--primary); cursor: pointer; border-radius: 2px;"></div>
     <div class="modal-overlay" id="modal-portal"><div class="modal-dialog"><div class="modal-title">◆ 圣物传送确认 ◆</div><div class="modal-text">即将开启传送门，前往<span class="highlight">夸克档案馆</span><br>获取本服务器专属的<span class="highlight">「想象之上」整合圣物</span><br>此物仅强化画面与声效，不改原版生存规则<br>是否确认开启传送？</div><div class="modal-buttons"><button class="modal-btn cancel" data-modal="modal-portal">◇ 暂缓启程 ◇</button><button class="modal-btn confirm" id="confirm-portal">◆ 开启传送 ◆</button></div></div></div>
     <div class="modal-overlay" id="modal-qq"><div class="modal-dialog"><div class="modal-title">◆ 旅团通讯接入 ◆</div><div class="modal-text">即将连接到<span class="highlight">星牧 冒险旅团</span><br>通讯频道：<span class="highlight">QQ 群聊阵列</span><br>加入后获取服务器地址、整合包帮助与最新动态<br>是否确认接入？</div><div class="modal-buttons"><button class="modal-btn cancel" data-modal="modal-qq">◇ 暂缓接入 ◇</button><button class="modal-btn confirm" id="confirm-qq">◆ 加入旅团 ◆</button></div></div></div>
-    <div class="modal-overlay" id="modal-pcl"><div class="modal-dialog"><div class="modal-title">◆ 远古秘藏 · 四钥封印 ◆</div><div class="modal-text">集齐四季真言，按“春→夏→秋→冬”顺序输入完整密钥。</div><input type="text" id="secret-key" class="secret-input" placeholder="请输入四季真言（春夏秋冬顺序)" autocomplete="off"><div class="modal-buttons"><button class="modal-btn cancel" data-modal="modal-pcl">◇ 暂缓 ◇</button><button class="modal-btn confirm" id="confirm-pcl">◆ 解封秘藏 ◆</button></div></div></div>
-    <div class="modal-overlay" id="modal-success"><div class="modal-dialog"><div class="modal-title">◆ 封印解除 · 秘藏开启 ◆</div><div class="modal-text" id="success-message"></div><div class="modal-buttons" id="success-buttons"></div></div></div>
+
     <script>
         // ==============================================
-        // ✅ 第一部分：基础功能（完全独立，永不崩溃）
+        // ✅ 基础功能（完全独立，永不崩溃）
         // ==============================================
         (function() {
             // 1. 星空背景
@@ -869,11 +731,8 @@
             const qqBtn = document.getElementById('qq-btn');
             const modalPortal = document.getElementById('modal-portal');
             const modalQQ = document.getElementById('modal-qq');
-            const modalPCL = document.getElementById('modal-pcl');
-            const modalSuccess = document.getElementById('modal-success');
             const confirmPortal = document.getElementById('confirm-portal');
             const confirmQQ = document.getElementById('confirm-qq');
-            const confirmPCL = document.getElementById('confirm-pcl');
             const targetUrl = 'https://pan.quark.cn/s/f77f2b7e87c7';
             const qqGroupUrl = 'https://qun.qq.com/universal-share/share?ac=1&authKey=ohmna7L10kOjvFCfa3%2Fwe2Y4lxzTASBlHOLso5r8idU%2FQlgFaPghYWRS8YzhhyTg&busi_data=eyJncm91cENvZGUiOiI1ODYxNzY3NzUiLCJ0b2tlbiI6ImV5S0xFNXNnUXlVMGJTTTVNcHVQRjRBNzNWR3dnam1mQnRsVGROTEVtemhKSzI3OTRqb1VrR3R4T2hsU05NV04iLCJ1aW4iOiIyMjQ1MzQxOTMzIn0%3D&data=f1uuHVHEedQBSBoYPWo5l6eX65tjwtxG5ir27f1QzIHrToreBA5aZmK6cABIvvIL7Kp2mM_kMDTCw-qp0SBw_Q&svctype=4&tempid=h5_group_info';
             let isCharging = false;
@@ -906,7 +765,7 @@
                 modal.classList.remove('active');
             }
 
-            // 5. 核心按钮事件（100%可用）
+            // 5. 核心按钮事件
             portalBtn.addEventListener('click', () => startCharge(portalBtn, modalPortal, 'powering-up-blue'));
             qqBtn.addEventListener('click', () => startCharge(qqBtn, modalQQ, 'powering-up-pink'));
 
@@ -940,7 +799,7 @@
                 }
             });
 
-            // 6. 服务器状态检测（100%可用）
+            // 6. 服务器状态检测
             const statusDot = document.getElementById('status-dot');
             const statusText = document.getElementById('status-text');
             const playerTag = document.getElementById('player-tag');
@@ -1012,7 +871,6 @@
                 }
             }
 
-            // 立即执行一次，然后每5秒更新
             checkServerStatus();
             setInterval(checkServerStatus, 5000);
 
@@ -1063,7 +921,6 @@
             };
 
             const SEASON_KEY = { spring: "浅草", summer: "流萤", autumn: "落照", winter: "寒酥" };
-            const FULL_KEY = SEASON_KEY.spring + SEASON_KEY.summer + SEASON_KEY.autumn + SEASON_KEY.winter;
             let flashTimer = null;
             let originalTitleText = null;
 
@@ -1154,24 +1011,7 @@
                 });
             });
 
-            // 10. 远古秘藏彩蛋
-            confirmPCL.addEventListener('click', () => {
-                const input = document.getElementById('secret-key').value.trim();
-                if (input === FULL_KEY) {
-                    successMessage.innerHTML = '恭喜你解开了远古秘藏！<br><br>专属链接【已废弃】：<br><span class="highlight">截图此页面给管理员</span><br><br>感谢你探索世界的每一个角落。';
-                    successButtons.innerHTML = '<button class="modal-btn confirm" onclick="window.open(\'https://pan.quark.cn/s/xxx\', \'_blank\')">◆ 下载秘藏 ◆</button><button class="modal-btn cancel" onclick="closeModal(document.getElementById(\'modal-success\'))">◇ 关闭 ◇</button>';
-                    closeModal(modalPCL);
-                    setTimeout(() => modalSuccess.classList.add('active'), 300);
-                } else {
-                    alert('密钥错误，请重新输入。提示：按春夏秋冬顺序输入四季真言。');
-                }
-            });
-
-            document.getElementById('mobile-easter-egg').addEventListener('click', () => {
-                modalPCL.classList.add('active');
-            });
-
-            // 11. 分季节标题轮换
+            // 10. 分季节标题轮换
             const seasonTitles = {
                 spring: ['星牧·初芽','星牧·绿潮','星牧·花咒','星牧·春醒','星牧·林径','星牧·小晴空','星牧·荆棘冠','星牧·复苏歌','星牧·鹿鸣涧','星牧·迷雾种','星牧·风之信标','星牧·生命祭坛','星牧·原初之息','星牧·翠色协议','星牧·破晓远征'],
                 summer: ['星牧·炎息','星牧·沙暴','星牧·熔核','星牧·烈芒','星牧·雷鼓','星牧·火蛇舞','星牧·小晴空','星牧·龙巢热','星牧·雷暴核','星牧·蝉剑鸣','星牧·烈日祭坛','星牧·赤沙遗迹','星牧·炎魔之眼','星牧·雷云堡垒','星牧·狂战士营'],
@@ -1216,349 +1056,6 @@
 
             console.log("✅ 基础功能加载完成！所有按钮和服务器状态已正常工作");
         })();
-// ==============================================
-// 🔍 2026.6.12 终极调试版登录代码（逐行日志）
-// ==============================================
-(function() {
-    if (typeof msal === 'undefined') {
-        console.error("❌ FATAL: MSAL库未加载");
-        const loginBtn = document.getElementById('mc-login-btn');
-        loginBtn.textContent = "MSAL加载失败";
-        loginBtn.disabled = true;
-        return;
-    }
-
-    console.log("✅ MSAL库加载成功，版本:", msal.VERSION);
-
-    try {
-        // 🟢 用我私人部署的代理（今天测试100%可用）
-        const PROXY_PREFIX = "https://mc-proxy.pages.dev/api/proxy?url=";
-        console.log("✅ 使用代理:", PROXY_PREFIX);
-
-        // 🔴 这里换成你自己的clientId
-        const msalConfig = {
-            auth: {
-                clientId: "你的clientId",
-                authority: "https://login.microsoftonline.com/consumers",
-                redirectUri: "https://xiaoyang9245.github.io/xiaoyang9245/",
-                knownAuthorities: ["https://login.microsoftonline.com/consumers"],
-                skipAuthorityMetadataCache: true,
-                mergeDefaultScopes: false,
-                allowRedirectInIframe: false,
-                navigateToLoginRequestUrl: true
-            },
-            cache: {
-                cacheLocation: "localStorage",
-                storeAuthStateInCookie: false,
-                secureCookies: false
-            },
-            system: {
-                allowNativeBroker: false,
-                windowHashTimeout: 60000,
-                iframeHashTimeout: 6000,
-                loadFrameTimeout: 6000,
-                loggerOptions: {
-                    loggerCallback: (level, message, containsPii) => {
-                        if (containsPii) return;
-                        const levels = ['ERROR', 'WARN', 'INFO', 'VERBOSE'];
-                        console.log(`[MSAL ${levels[level]}] ${message}`);
-                    },
-                    logLevel: msal.LogLevel.Verbose
-                }
-            }
-        };
-
-        console.log("✅ MSAL配置:", msalConfig);
-        const msalInstance = new msal.PublicClientApplication(msalConfig);
-        console.log("✅ MSAL实例创建成功");
-
-        // 双重权限锁定
-        msalInstance.addEventCallback((event) => {
-            console.log(`[MSAL事件] ${event.eventType}`, event.payload);
-            if (event.eventType === "LOGIN_START" || event.eventType === "ACQUIRE_TOKEN_START") {
-                event.payload.scopes = ["XboxLive.signin", "offline_access"];
-                console.log("✅ 权限已锁定为:", event.payload.scopes);
-            }
-        });
-
-        const loginRequest = {
-            scopes: ["XboxLive.signin", "offline_access"],
-            prompt: "select_account",
-            responseMode: "fragment"
-        };
-
-        let currentMcProfile = null;
-        const mcLoginBtn = document.getElementById('mc-login-btn');
-        const userCorner = document.getElementById('user-corner');
-        const userAvatar = document.getElementById('user-avatar');
-        const userNameSpan = document.getElementById('user-name');
-        const dropdownArrow = document.getElementById('user-dropdown-arrow');
-        const dropdownMenu = document.getElementById('user-dropdown');
-
-        // 彻底清除所有缓存
-        (function clearAllCache() {
-            localStorage.clear();
-            sessionStorage.clear();
-            console.log("✅ 所有本地缓存已清除");
-        })();
-
-        // 处理重定向回调
-        msalInstance.handleRedirectPromise()
-            .then(async (response) => {
-                if (response) {
-                    console.log("✅ 重定向登录成功，微软令牌:", response.accessToken.substring(0, 20) + "...");
-                    await processLoginResponse(response);
-                } else {
-                    console.log("ℹ️ 没有重定向登录响应");
-                }
-            })
-            .catch(err => {
-                console.error("❌ 重定向登录失败:", err);
-                alert(`重定向登录失败: ${err.errorCode} - ${err.errorMessage}`);
-            });
-
-        // Xbox认证流程（带完整日志）
-        async function getXboxToken(msAccessToken) {
-            console.log("🔄 正在获取Xbox令牌...");
-            const url = PROXY_PREFIX + encodeURIComponent("https://user.auth.xboxlive.com/user/authenticate");
-            console.log("🔄 请求地址:", url);
-            
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    Properties: {
-                        AuthMethod: "RPS",
-                        SiteName: "user.auth.xboxlive.com",
-                        RpsTicket: `d=${msAccessToken}`
-                    },
-                    RelyingParty: "http://auth.xboxlive.com",
-                    TokenType: "JWT"
-                })
-            });
-
-            console.log("🔄 Xbox响应状态:", res.status, res.statusText);
-            if (!res.ok) {
-                const errText = await res.text();
-                console.error("❌ Xbox错误响应:", errText);
-                throw new Error(`Xbox认证失败: ${res.status} ${res.statusText}`);
-            }
-
-            const data = await res.json();
-            console.log("✅ Xbox令牌获取成功:", data.Token.substring(0, 20) + "...");
-            return data;
-        }
-
-        async function getXstsToken(xblData) {
-            console.log("🔄 正在获取XSTS令牌...");
-            const url = PROXY_PREFIX + encodeURIComponent("https://xsts.auth.xboxlive.com/xsts/authorize");
-            
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    Properties: {
-                        SandboxId: "RETAIL",
-                        UserTokens: [xblData.Token]
-                    },
-                    RelyingParty: "rp://api.minecraftservices.com/",
-                    TokenType: "JWT"
-                })
-            });
-
-            console.log("🔄 XSTS响应状态:", res.status, res.statusText);
-            if (!res.ok) {
-                const errText = await res.text();
-                console.error("❌ XSTS错误响应:", errText);
-                throw new Error(`XSTS认证失败: ${res.status} ${res.statusText}`);
-            }
-
-            const data = await res.json();
-            console.log("✅ XSTS令牌获取成功，用户哈希:", data.DisplayClaims.xui[0].uhs);
-            return {
-                token: data.Token,
-                userHash: data.DisplayClaims.xui[0].uhs
-            };
-        }
-
-        async function getMinecraftToken(userHash, xstsToken) {
-            console.log("🔄 正在获取Minecraft令牌...");
-            const url = PROXY_PREFIX + encodeURIComponent("https://api.minecraftservices.com/authentication/login_with_xbox");
-            
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    identityToken: `XBL3.0 x=${userHash};${xstsToken}`
-                })
-            });
-
-            console.log("🔄 Minecraft令牌响应状态:", res.status, res.statusText);
-            if (!res.ok) {
-                const errText = await res.text();
-                console.error("❌ Minecraft令牌错误:", errText);
-                throw new Error("无法获取Minecraft令牌，请确保你的账号已购买Java版");
-            }
-
-            const data = await res.json();
-            console.log("✅ Minecraft令牌获取成功:", data.access_token.substring(0, 20) + "...");
-            return data.access_token;
-        }
-
-        async function getMinecraftProfile(mcAccessToken) {
-            console.log("🔄 正在获取Minecraft玩家档案...");
-            const url = PROXY_PREFIX + encodeURIComponent("https://api.minecraftservices.com/minecraft/profile");
-            
-            const res = await fetch(url, {
-                headers: { 
-                    "Authorization": `Bearer ${mcAccessToken}`,
-                    "Accept": "application/json"
-                }
-            });
-
-            console.log("🔄 玩家档案响应状态:", res.status, res.statusText);
-            if (!res.ok) {
-                const errText = await res.text();
-                console.error("❌ 玩家档案错误:", errText);
-                throw new Error("无法获取玩家档案");
-            }
-
-            const data = await res.json();
-            console.log("✅ 玩家档案获取成功:", data);
-            return data;
-        }
-
-        async function processLoginResponse(msResponse) {
-            try {
-                const xblData = await getXboxToken(msResponse.accessToken);
-                const xstsData = await getXstsToken(xblData);
-                const mcToken = await getMinecraftToken(xstsData.userHash, xstsData.token);
-                const profile = await getMinecraftProfile(mcToken);
-
-                currentMcProfile = { 
-                    name: profile.name, 
-                    id: profile.id,
-                    uuid: formatUuid(profile.id)
-                };
-
-                localStorage.setItem('mc_auth', JSON.stringify({ 
-                    mcProfile: currentMcProfile,
-                    expiresAt: Date.now() + 86400000
-                }));
-                
-                updateUserUI();
-                alert(`登录成功！欢迎回来，${profile.name}`);
-            } catch (err) {
-                console.error("❌ 登录流程失败:", err);
-                alert(`登录失败: ${err.message}`);
-            }
-        }
-
-        function formatUuid(plainId) {
-            return plainId.replace(
-                /^(.{8})(.{4})(.{4})(.{4})(.{12})$/,
-                '$1-$2-$3-$4-$5'
-            );
-        }
-
-        async function doLogin() {
-            if (mcLoginBtn.disabled) return;
-            mcLoginBtn.disabled = true;
-            mcLoginBtn.textContent = "正在认证…";
-            console.log("🔄 开始登录流程...");
-
-            try {
-                console.log("🔄 尝试弹窗登录...");
-                const msResponse = await msalInstance.loginPopup(loginRequest);
-                await processLoginResponse(msResponse);
-            } catch (err) {
-                console.error("❌ 弹窗登录失败:", err);
-                
-                if (err.errorCode === "popup_window_error" || 
-                    err.errorCode === "user_interaction_required" ||
-                    err.message.includes("popup") ||
-                    err.message.includes("cookie")) {
-                    
-                    if (confirm("弹窗登录被浏览器拦截，将使用重定向登录模式。点击确定继续。")) {
-                        console.log("🔄 降级为重定向登录...");
-                        await msalInstance.loginRedirect(loginRequest);
-                        return;
-                    }
-                }
-
-                alert(`登录失败: ${err.errorCode} - ${err.errorMessage || err.message}`);
-            } finally {
-                mcLoginBtn.disabled = false;
-                mcLoginBtn.textContent = "⛏️ 冒险者认证";
-            }
-        }
-
-        function updateUserUI() {
-            if (currentMcProfile) {
-                mcLoginBtn.style.display = "none";
-                userCorner.style.display = "flex";
-                userNameSpan.textContent = currentMcProfile.name;
-                userAvatar.src = `https://mc-heads.net/avatar/${currentMcProfile.id}/32?t=${Date.now()}`;
-                console.log("✅ 用户UI已更新");
-            } else {
-                mcLoginBtn.style.display = "inline-flex";
-                userCorner.style.display = "none";
-            }
-        }
-
-        function doLogout() {
-            localStorage.clear();
-            sessionStorage.clear();
-            currentMcProfile = null;
-            updateUserUI();
-            msalInstance.logoutRedirect({
-                postLogoutRedirectUri: window.location.origin
-            });
-        }
-
-        function copyUuid() {
-            if (!currentMcProfile) return;
-            navigator.clipboard.writeText(currentMcProfile.uuid)
-                .then(() => alert("UUID已复制到剪贴板"))
-                .catch(() => alert("复制失败，请手动复制：" + currentMcProfile.uuid));
-        }
-
-        function refreshAvatar() {
-            if (!currentMcProfile) return;
-            userAvatar.src = `https://mc-heads.net/avatar/${currentMcProfile.id}/32?t=${Date.now()}`;
-        }
-
-        mcLoginBtn.addEventListener('click', doLogin);
-        document.getElementById('logout-btn').addEventListener('click', doLogout);
-        document.getElementById('copy-uuid-btn').addEventListener('click', copyUuid);
-        document.getElementById('refresh-avatar-btn').addEventListener('click', refreshAvatar);
-
-        dropdownArrow.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
-        });
-
-        document.addEventListener('click', () => {
-            dropdownMenu.classList.remove('show');
-        });
-
-        console.log("✅ 登录功能初始化完成！");
-    } catch (err) {
-        console.error("❌ 登录功能初始化失败:", err);
-        const loginBtn = document.getElementById('mc-login-btn');
-        loginBtn.textContent = "登录初始化失败";
-        loginBtn.disabled = true;
-    }
-})();
     </script>
 </body>
 </html>
