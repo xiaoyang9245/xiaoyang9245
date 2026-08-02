@@ -1,13 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="baidu-site-verification" content="codeva-tx6H4yXIXw" />
-    <title>星牧·想象之上 | 原初大陆纯净生存服务器</title>
-    <meta name="description" content="星牧·想象之上 - 原初大陆纯净生存史诗。极致美化、流畅优化、原版规则，加入冒险旅团开启你的Minecraft征程。">
-    <meta name="keywords" content="我的世界, Minecraft, 纯净生存, 服务器, 星牧, 整合包, 冒险">
-    <meta name="author" content="xiaoyang9245和原初大陆的各位">
+    <title>星牧·想象之上 | 小晴空客户端 · 原初大陆纯净生存服</title>
+    <meta name="description" content="星牧·小晴空客户端｜Minecraft JE 26.1.2 Fabric 原版生存增强客户端，配套小晴空官方生存服，极致优化+电影级光影材质">
+    <meta name="keywords" content="我的世界,星牧,小晴空,客户端,纯净生存,26.1.2,Fabric,光影材质,服务器">
+    <meta name="author" content="xiaoyang9245和公会的各位">
     <meta name="robots" content="index, follow">
     <link rel="icon" type="image/svg+xml" href="newworld-logo.svg">
     <style>
@@ -15,24 +16,24 @@
             --bg-main: #12141d;
             --bg-card: #1e2130;
             --bg-panel: #272b3d;
+            --bg-highlight: #242838;
             --primary: #72a8ff;
             --primary-light: #94c0ff;
             --accent-rose: #ff88b2;
             --text-main: #f0f4ff;
             --text-sub: #b4bede;
             --text-muted: #8692b0;
+            --text-high: #c7ddff;
             --border: #383d52;
+            --border-light: #444a63;
             --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.25);
             --shadow-glow: 0 0 20px rgba(114, 168, 255, 0.35);
+            --shadow-pink-glow: 0 0 20px rgba(255, 136, 178, 0.35);
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 16px;
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: var(--bg-main);
             min-height: 100vh;
@@ -44,18 +45,9 @@
             line-height: 1.6;
             font-size: 15px;
             overflow-x: hidden;
-            font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+            font-family: "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
             color: var(--text-main);
             background-image: radial-gradient(ellipse at top, rgba(114, 168, 255, 0.08), transparent 60%);
-        }
-        #star-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
         }
         .pixel-crt {
             width: 95%;
@@ -73,20 +65,15 @@
             transition: filter 0.3s ease;
         }
         @media (min-width: 1600px) {
-            .pixel-crt {
-                width: 85%;
-                max-width: 1800px;
-            }
-            .main-screen {
-                padding: 24px 32px;
-            }
+            .pixel-crt { width: 85%; max-width: 1800px; }
+            .main-screen { padding: 24px 32px; }
         }
         .pixel-crt.powering-up-blue {
             animation: borderChargeBlue 0.3s ease-in-out 3 alternate;
             filter: brightness(1.15);
         }
         @keyframes borderChargeBlue {
-            0% { box-shadow: var(--shadow-soft), 0 0 20px rgba(114, 168, 255, 0.35); }
+            0% { box-shadow: var(--shadow-soft), var(--shadow-glow); }
             100% { box-shadow: var(--shadow-soft), 0 0 40px rgba(114, 168, 255, 0.7); }
         }
         .pixel-crt.powering-up-pink {
@@ -94,31 +81,20 @@
             filter: brightness(1.15);
         }
         @keyframes borderChargePink {
-            0% { box-shadow: var(--shadow-soft), 0 0 20px rgba(255, 136, 178, 0.35); }
+            0% { box-shadow: var(--shadow-soft), var(--shadow-pink-glow); }
             100% { box-shadow: var(--shadow-soft), 0 0 40px rgba(255, 136, 178, 0.7); }
-        }
-        .pixel-corner {
-            display: none;
         }
         .main-screen {
             flex: 1;
             padding: 18px 24px;
             overflow-y: auto;
         }
-        .main-screen::-webkit-scrollbar {
-            width: 6px;
-        }
-        .main-screen::-webkit-scrollbar-track {
-            background: var(--bg-card);
-            border-radius: 3px;
-        }
-        .main-screen::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-        .main-screen::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
+        .main-screen::-webkit-scrollbar { width: 6px; }
+        .main-screen::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 3px; }
+        .main-screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .main-screen::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* ===== 头部区块 ===== */
         .header-block {
             text-align: center;
             margin-bottom: 18px;
@@ -126,6 +102,16 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             padding: 16px 20px;
+        }
+        .pack-version-tag {
+            display: inline-block;
+            font-size: 12px;
+            background: linear-gradient(135deg, #3a6fc9, #2d5bb8);
+            padding: 3px 12px;
+            border-radius: 99px;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: 0.05em;
         }
         .scanline-text {
             font-size: 11px;
@@ -164,6 +150,8 @@
             padding-top: 7px;
             margin-top: 4px;
         }
+
+        /* ===== 服务器+客户端状态条 ===== */
         .server-info-strip {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -196,9 +184,53 @@
             border: none;
         }
         .server-tag em {
-            color: var(--text-main);
+            color: var(--text-high);
             font-style: normal;
         }
+
+        /* ===== 客户端介绍区块 ===== */
+        .pack-desc-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 18px;
+        }
+        .pack-title-small {
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+        }
+        .pack-text {
+            font-size: 12px;
+            color: var(--text-sub);
+            line-height: 1.7;
+        }
+        .pack-grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 12px;
+        }
+        .pack-subcard {
+            background: var(--bg-highlight);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+        }
+        .pack-subtitle {
+            font-size: 12px;
+            color: var(--primary-light);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .pack-subtext {
+            font-size: 11px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* ===== 下载&社群按钮面板 ===== */
         .portal-panel {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -297,6 +329,8 @@
             padding-left: 12px;
             white-space: nowrap;
         }
+
+        /* ===== 社交渠道 ===== */
         .social-links {
             display: flex;
             align-items: center;
@@ -356,6 +390,48 @@
             0%, 100% { box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
             50% { box-shadow: 0 0 25px rgba(255, 136, 178, 0.7); }
         }
+
+        /* ===== 季节模块 ===== */
+        .current-season-label {
+            text-align: center;
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            text-shadow: 0 0 4px rgba(114, 168, 255, 0.25);
+        }
+        .season-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 12px 0 16px;
+            padding: 8px 0;
+        }
+        .season-card {
+            flex: 0 1 80px;
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 8px 4px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-sub);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .season-card.active {
+            border-color: var(--primary);
+            background: #2a2e42;
+            color: var(--primary);
+            box-shadow: 0 0 8px rgba(114, 168, 255, 0.2);
+        }
+        .season-emoji {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ===== 模组功能卡片网格 ===== */
         .pixel-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -477,6 +553,8 @@
             white-space: nowrap;
             border-radius: 3px;
         }
+
+        /* ===== 页脚 ===== */
         .footer-pixel {
             text-align: center;
             font-size: 9px;
@@ -485,6 +563,8 @@
             padding-top: 8px;
             opacity: 0.8;
         }
+
+        /* ===== 弹窗样式 ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -556,45 +636,19 @@
             background: linear-gradient(135deg, #3a6fc9, #2d5bb8);
             color: #e6f0ff;
         }
-        .season-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 16px 0 12px;
-            padding: 8px 0;
-        }
-        .season-card {
-            flex: 0 1 80px;
-            text-align: center;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 8px 4px;
-            border-radius: var(--radius-sm);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-sub);
-            transition: 0.2s;
-        }
-        .season-card.active {
-            border-color: var(--primary);
-            background: #2a2e42;
-            color: var(--primary);
-            box-shadow: 0 0 8px rgba(114, 168, 255, 0.2);
-        }
-        .season-emoji {
-            font-size: 22px;
-            display: block;
-            margin-bottom: 4px;
-        }
+
+        /* ===== 响应式适配 ===== */
         @media (max-width: 500px) {
             .season-indicator { gap: 8px; }
             .season-card { flex-basis: 60px; font-size: 10px; }
             .season-emoji { font-size: 18px; }
+            .pack-grid-two { grid-template-columns: 1fr; }
         }
         @media(max-width:1100px) {
             .pixel-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media(max-width:1000px) {
+            .pixel-grid { grid-template-columns: repeat(3, 1fr); }
             .server-info-strip { gap: 12px; }
             .portal-panel { gap: 12px; }
             .portal-rune { display: none; }
@@ -603,7 +657,6 @@
             .scanline-text { font-size: 10px; letter-spacing: 0.3em; }
             .pixel-btn { min-width: 120px; padding: 8px 16px; font-size: 12px; }
             .pixel-card.selected { transform: scale(1.06); }
-            .pixel-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media(max-width:700px) {
             .pixel-grid { grid-template-columns: repeat(2, 1fr); }
@@ -613,8 +666,7 @@
             .pixel-title { font-size: clamp(18px, 7vw, 24px); letter-spacing: 0.08em; }
             .scanline-text { font-size: 9px; letter-spacing: 0.2em; }
             .server-info-strip { flex-wrap: wrap; gap: 5px; padding: 7px 8px; }
-            .server-tag { font-size: 9px; }
-            .portal-panel { gap: 5px; padding: 7px; flex-wrap: nowrap; }
+            .portal-panel { gap: 5px; flex-wrap: nowrap; padding: 7px; }
             .portal-label { font-size: 10px; }
             .pixel-btn { padding: 6px 8px; font-size: 9px; min-width: 90px; flex-shrink: 0; }
             body { font-size: 10px; padding: 5px; }
@@ -629,433 +681,674 @@
     </style>
 </head>
 <body>
-    <canvas id="star-canvas"></canvas>
     <div class="pixel-crt" id="terminal">
         <div class="main-screen">
+            <!-- 头部标题区 -->
             <div class="header-block">
-                <div class="scanline-text">[ 冒险者终端 // 连接到：小晴空 ]</div>
+                <!-- 客户端版本号（仅此一处展示） -->
+                <div class="pack-version-tag">小晴空客户端</div>
+                <div class="scanline-text">[ 冒险者终端 · 客户端 & 服务器 ]</div>
                 <h1 class="pixel-title" id="main-title">星牧·想象之上</h1>
-                <div class="sub-header">✦ 原初大陆 · 纯净生存史诗 ✦</div>
+                <div class="sub-header">✦ 原版生存增强 · 极致优化光影 · 官方联机服务器 ✦</div>
             </div>
+
+            <!-- 服务器+客户端状态条 -->
             <div class="server-info-strip">
-                <span class="server-tag"><span class="dot-indicator" id="status-dot"></span> 世界状态：<em id="status-text">探知中…</em></span>
-                <span class="server-tag" id="player-tag" style="display:none;">👥 同行旅者：<em id="player-text">0 / 0</em></span>
-                <span class="server-tag">📜 世界律法：<em>JE 26.1.2 原版规则</em></span>
-                <span class="server-tag">🏕️ 生存法则：<em>纯净生存 · 无 mod 侵染</em></span>
-                <span class="server-tag">✨ 赐福：<em>Vs1.1.7-hf1</em></span>
+                <span class="server-tag">
+                    <span class="dot-indicator" id="status-dot"></span>
+                    服务器状态：<em id="status-text">实时探测中…</em>
+                </span>
+                <span class="server-tag" id="player-tag" style="display:none;">
+                    👥 在线玩家：<em id="player-text">--</em>
+                </span>
+                <span class="server-tag">📦 版本号：<em>Vs 1.1.9</em></span>
+                <span class="server-tag">📜 游戏版本：<em>JE 26.1.2</em></span>
+                <span class="server-tag">🏕 定位：<em>原版视觉性能增强</em></span>
+                <span class="server-tag">🎮 模组数：<em>130+</em></span>
             </div>
+
+            <!-- 客户端介绍区块 -->
+            <div class="pack-desc-block">
+                <h3 class="pack-title-small">「小晴空」客户端 核心说明</h3>
+                <p class="pack-text">本客户端为 <strong>原版生存增强向</strong>，不新增生物、维度、装备与玩法，仅搭载全套性能优化模组、电影级光影、高清材质与沉浸式音效；完美适配小晴空官方生存服，单人/联机通用，下载即可一键开玩。</p>
+                <div class="pack-grid-two">
+                    <div class="pack-subcard">
+                        <div class="pack-subtitle">📦 客户端包含</div>
+                        <div class="pack-subtext">全量 Fabric 优化 Mod、多套可调光影、数十款 3D 动画材质、动态粒子/音效组件、实用界面辅助工具；Modrinth 标准打包格式，兼容主流启动器。</div>
+                    </div>
+                    <div class="pack-subcard">
+                        <div class="pack-subtitle">💻 硬件建议</div>
+                        <div class="pack-subtext">内存分配 4GB+，独立显卡 GTX 1660 / AMD RX 560 及以上；低配设备可关闭光影仅保留优化模组，也能流畅运行。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 下载&社群按钮面板 -->
             <div class="portal-panel">
-                <span class="portal-label"><span style="font-size:1.3em;">⬡ 传送锚点</span></span>
-                <button class="pixel-btn btn-portal" id="portal-btn">获取圣物 <span class="btn-arrow">▶</span></button>
-                <button class="pixel-btn btn-qq" id="qq-btn">加入冒险旅团 <span class="btn-arrow">▶</span></button>
-                <span class="portal-rune">* 坐标稳定 · 随时跃迁 *</span>
+                <span class="portal-label"><span style="font-size:1.3em;">⬡ 资源传送锚点</span></span>
+                <button class="pixel-btn btn-portal" id="portal-btn">下载客户端 <span class="btn-arrow">▶</span></button>
+                <button class="pixel-btn btn-qq" id="qq-btn">加入玩家社群 <span class="btn-arrow">▶</span></button>
+                <span class="portal-rune">客户端 & 服务器信息同步更新</span>
             </div>
-            <div class="pixel-grid" id="card-grid">
-                <div class="pixel-card" data-index="0"><div class="card-icon-block">⚙️</div><div class="card-title-pixel">核心引擎</div><div class="card-divider-pixel"></div><p class="card-desc">古老的优化之术融入大地脉搏。内存碎片被温柔抚平，区块流转如林间溪水。<em>卡顿与迟滞皆如晨雾消散</em>，只留丝绸般的顺滑体感。</p><div class="mod-list"><div class="mod-list-title">▸ 大地深处苏醒的低语</div><div class="mod-list-items"><span class="mod-tag">钠</span><span class="mod-tag">锂</span><span class="mod-tag">铁氧体磁芯</span><span class="mod-tag">C²M引擎</span><span class="mod-tag">立即快速</span><span class="mod-tag">现代化修复</span><span class="mod-tag">不良优化清理</span><span class="mod-tag">服务器核心</span><span class="mod-tag">极速内存优化</span><span class="mod-tag">交替电流</span><span class="mod-tag">结构布局优化</span></div></div><span class="card-codename"># 大地脉搏</span></div>
-                <div class="pixel-card" data-index="1"><div class="card-icon-block">🔮</div><div class="card-title-pixel">光影重铸</div><div class="card-divider-pixel"></div><p class="card-desc">晨曦与暮霭的法则被重新书写。光线穿过针叶林洒下斑驳碎金，雨后石板映着摇曳灯火。<em>每一帧皆如画师手笔</em>。</p><div class="mod-list"><div class="mod-list-title">▸ 晨曦与暮霭的重写之书</div><div class="mod-list-items"><span class="mod-tag">Iris</span><span class="mod-tag">Sodium Extra</span><span class="mod-tag">Reese's Sodium Options</span><span class="mod-tag">Continuity</span><span class="mod-tag">Euphoria Patcher</span><span class="mod-tag">ScalableLux</span></div></div><span class="card-codename"># 晨曦滤镜</span></div>
-                <div class="pixel-card" data-index="2"><div class="card-icon-block">🎨</div><div class="card-title-pixel">纹理重塑</div><div class="card-divider-pixel"></div><p class="card-desc">大地上的万物被赋予崭新灵魂。钻石剑刃流转冷冽锋芒，橡木盾牌铭刻岁月纹路。<em>方块依旧是方块，质感却已天翻地覆</em>。</p><div class="mod-list"><div class="mod-list-title">▸ 万物重织的匠心神谕</div><div class="mod-list-items"><span class="mod-tag">连续性材质</span><span class="mod-tag">Pixlli 128x</span><span class="mod-tag">SPBR 16x</span><span class="mod-tag">Fresh动画</span><span class="mod-tag">HyperPunchy</span><span class="mod-tag">Fancy床铺</span><span class="mod-tag">精炼水桶</span><span class="mod-tag">更好灯笼</span><span class="mod-tag">Drigo 3D</span><span class="mod-tag">Fresh末地水晶</span><span class="mod-tag">Fresh花植物</span></div></div><span class="card-codename"># 万物新生</span></div>
-                <div class="pixel-card" data-index="3"><div class="card-icon-block">✨</div><div class="card-title-pixel">幻界织衣</div><div class="card-divider-pixel"></div><p class="card-desc">织梦者将万千色彩纺成纱线，为大陆披上华美外衣。盔甲闪烁炫光、物品轻盈浮动。<em>每帧都经精心编织</em>，如诗如画。</p><div class="mod-list"><div class="mod-list-title">▸ 幻界织梦的衣橱</div><div class="mod-list-items"><span class="mod-tag">Complementary</span><span class="mod-tag">Derivative</span><span class="mod-tag">IterationT</span><span class="mod-tag">3D盔甲</span><span class="mod-tag">动画物品</span><span class="mod-tag">视觉标题</span><span class="mod-tag">进食动画</span><span class="mod-tag">详细动画</span><span class="mod-tag">彩色附魔</span><span class="mod-tag">隐藏盔甲</span></div></div><span class="card-codename"># 幻梦织衣</span></div>
-                <div class="pixel-card" data-index="4"><div class="card-icon-block">🛡️</div><div class="card-title-pixel">圣痕刻印</div><div class="card-divider-pixel"></div><p class="card-desc">贤者在世界根基刻下守护符文。崩溃裂隙被弥合，传送门紊乱被修正。<em>无声守护</em>，让冒险不再被琐碎打扰。</p><div class="mod-list"><div class="mod-list-title">▸ 守护贤者的刻印</div><div class="mod-list-items"><span class="mod-tag">崩溃修复</span><span class="mod-tag">传送门修正</span><span class="mod-tag">输入法修复</span><span class="mod-tag">服务器核心</span><span class="mod-tag">现代化修复</span><span class="mod-tag">不良优化</span><span class="mod-tag">结构优化</span><span class="mod-tag">语言重载</span><span class="mod-tag">无警告</span></div></div><span class="card-codename"># 守护之印</span></div>
-                <div class="pixel-card" data-index="5"><div class="card-icon-block">🗺️</div><div class="card-title-pixel">星图导航</div><div class="card-divider-pixel"></div><p class="card-desc">两幅星图交叠于旅途——一幅悬于视野，一幅铺展书斋。<em>归家之路永不忘却</em>，星辰指引穿越迷雾。</p><div class="mod-list"><div class="mod-list-title">▸ 星辰铺展的双重舆图</div><div class="mod-list-items"><span class="mod-tag">Xaero世界地图</span><span class="mod-tag">Xaero小地图</span><span class="mod-tag">Xaero缩放</span><span class="mod-tag">金合欢翻译</span></div></div><span class="card-codename"># 星辰引路</span></div>
-                <div class="pixel-card" data-index="6"><div class="card-icon-block">🌿</div><div class="card-title-pixel">微光尘舞</div><div class="card-divider-pixel"></div><p class="card-desc">阳光穿过林间洒下浮尘，樱花粒子在微风中打旋。草丛惊起萤火，矿洞火星溅射。<em>世界不再静止</em>，与你同呼吸。</p><div class="mod-list"><div class="mod-list-title">▸ 风与尘的轻吟诗篇</div><div class="mod-list-items"><span class="mod-tag">可视性粒子</span><span class="mod-tag">粒子效果</span><span class="mod-tag">落叶</span><span class="mod-tag">经验改革</span><span class="mod-tag">精致渲染</span><span class="mod-tag">动画物品</span><span class="mod-tag">物品栏粒子</span><span class="mod-tag">EG粒子</span><span class="mod-tag">远景优化</span></div></div><span class="card-codename"># 风与尘语</span></div>
-                <div class="pixel-card" data-index="7"><div class="card-icon-block">🎵</div><div class="card-title-pixel">风吟天籁</div><div class="card-divider-pixel"></div><p class="card-desc">风之贤者将声律祝福洒满大地。洞穴水滴荡开回响，森林鸟鸣交织成歌。<em>闭上双眼</em>，感知世界呼吸。</p><div class="mod-list"><div class="mod-list-title">▸ 风之贤者的声律祝福</div><div class="mod-list-items"><span class="mod-tag">脚步声</span><span class="mod-tag">自然音效</span><span class="mod-tag">物理声效</span><span class="mod-tag">声音</span><span class="mod-tag">聊天工具</span><span class="mod-tag">更好F3</span></div></div><span class="card-codename"># 风之低语</span></div>
-                <div class="pixel-card" data-index="8"><div class="card-icon-block">🦸</div><div class="card-title-pixel">角色神形</div><div class="card-divider-pixel"></div><p class="card-desc">化身获得真正灵魂。皮肤层次分明，披风猎猎飘扬，铠甲闪烁冷光。<em>动作充满仪式感</em>，史诗般的气质。</p><div class="mod-list"><div class="mod-list-title">▸ 化身觉醒的形魂法典</div><div class="mod-list-items"><span class="mod-tag">3D皮肤层</span><span class="mod-tag">实体模型特性</span><span class="mod-tag">实体纹理特性</span><span class="mod-tag">实体渲染优化</span><span class="mod-tag">飘扬披风</span><span class="mod-tag">万用皮肤</span><span class="mod-tag">ClientID</span><span class="mod-tag">FeatherMorph</span><span class="mod-tag">FemaleGender</span></div></div><span class="card-codename"># 化身觉醒</span></div>
-                <div class="pixel-card" data-index="9"><div class="card-icon-block">👁️</div><div class="card-title-pixel">灵智界面</div><div class="card-divider-pixel"></div><p class="card-desc">情报之灵将知识编织于视野边缘。鼠标轻悬洞察前世今生，背包学会自我整理。<em>信息如流水自然呈现</em>。</p><div class="mod-list"><div class="mod-list-title">▸ 情报之灵的编织法典</div><div class="mod-list-items"><span class="mod-tag">JEI</span><span class="mod-tag">玉</span><span class="mod-tag">一键背包</span><span class="mod-tag">投影</span><span class="mod-tag">鼠标手势</span><span class="mod-tag">提示框滚动</span><span class="mod-tag">手持信息</span><span class="mod-tag">食物效果</span><span class="mod-tag">更好F3</span><span class="mod-tag">模组菜单</span></div></div><span class="card-codename"># 灵智之眼</span></div>
-            </div>
+
+            <!-- 社交渠道 -->
             <div class="social-links">
-                <a class="social-btn bilibili" href="https://space.bilibili.com/" target="_blank" title="旅团档案库·B站">B</a>
-                <span class="social-btn qq-hint" id="qq-hint-btn" title="点击此处，将指引你前往上方旅团通讯阵列">📡</span>
-                <a class="social-btn douyin" href="https://v.douyin.com/5KgdkcZAoE4/" target="_blank" title="旅团映像·抖音">♪</a>
+                <a class="social-btn bilibili" href="https://b23.tv/YxPPi8I" target="_blank" title="B站主页">B</a>
+                <span class="social-btn qq-hint" id="qq-hint-btn" title="点击高亮上方社群入口">📡</span>
+                <a class="social-btn douyin" href="https://v.douyin.com/hooSU8WoCZA/" target="_blank" title="抖音主页">♪</a>
             </div>
-            <div class="current-season-label" id="currentSeasonLabel" style="text-align: center; font-size: 13px; color: var(--primary); margin-bottom: 8px; text-shadow: 0 0 4px rgba(114, 168, 255, 0.25);"></div>
+
+            <!-- 季节轮换模块 -->
+            <div class="current-season-label" id="currentSeasonLabel">✦ 当前季节 ✦</div>
             <div class="season-indicator">
                 <div class="season-card" id="season-spring"><span class="season-emoji">🌸</span><span class="season-name"></span></div>
                 <div class="season-card" id="season-summer"><span class="season-emoji">☀️</span><span class="season-name"></span></div>
                 <div class="season-card" id="season-autumn"><span class="season-emoji">🍂</span><span class="season-name"></span></div>
                 <div class="season-card" id="season-winter"><span class="season-emoji">❄️</span><span class="season-name"></span></div>
             </div>
-            <div class="footer-pixel">◆ 星牧 · 原初大陆 ◆  |  * 纯净生存 · 极致美化 *  |  ◆ 愿像素之光指引前路 ◆</div>
+
+            <!-- 模组功能卡片（根据客户端实际模组更新） -->
+            <div class="pixel-grid" id="card-grid">
+                <!-- 卡片1：性能优化核心 -->
+                <div class="pixel-card" data-index="0">
+                    <div class="card-icon-block">⚙️</div>
+                    <div class="card-title-pixel">性能优化核心</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">全套底层优化模组，内存占用大幅降低，区块加载顺滑无卡顿，<em>低配设备也能稳定高帧率</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">内置优化模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">钠 Sodium</span>
+                            <span class="mod-tag">钠·扩展</span>
+                            <span class="mod-tag">锂 Lithium</span>
+                            <span class="mod-tag">铁氧体磁芯</span>
+                            <span class="mod-tag">C²M 引擎</span>
+                            <span class="mod-tag">实体渲染优化</span>
+                            <span class="mod-tag">动态 FPS</span>
+                            <span class="mod-tag">ImmediatelyFast</span>
+                            <span class="mod-tag">VMP 视距优化</span>
+                            <span class="mod-tag">ModernFix</span>
+                            <span class="mod-tag">ServerCore</span>
+                            <span class="mod-tag">结构布局优化</span>
+                            <span class="mod-tag">经验优化 Clumps</span>
+                            <span class="mod-tag">平滑滚动</span>
+                            <span class="mod-tag">平滑 GUI</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 大地脉搏</span>
+                </div>
+
+                <!-- 卡片2：光影渲染 -->
+                <div class="pixel-card" data-index="1">
+                    <div class="card-icon-block">🔮</div>
+                    <div class="card-title-pixel">光影渲染系统</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">Iris 渲染管线加持，多套成品光影，晨昏雨雾光照自然分层，<em>一键切换电影级画质</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">光影渲染组件</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">Iris 光影</span>
+                            <span class="mod-tag">Reese 钠界面</span>
+                            <span class="mod-tag">Continuity 连续纹理</span>
+                            <span class="mod-tag">Euphoria 光影补丁</span>
+                            <span class="mod-tag">FancyMenu 自定义菜单</span>
+                            <span class="mod-tag">ModernUI 现代化界面</span>
+                            <span class="mod-tag">ScalableLux 光照</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 晨曦滤镜</span>
+                </div>
+
+                <!-- 卡片3：视觉美化 -->
+                <div class="pixel-card" data-index="2">
+                    <div class="card-icon-block">🎨</div>
+                    <div class="card-title-pixel">视觉美化套件</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">3D 皮肤、动态披风、粒子特效、落叶动画全套视觉组件，<em>画面层次拉满不违和</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">视觉美化模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">3D 皮肤层</span>
+                            <span class="mod-tag">实体模型特性</span>
+                            <span class="mod-tag">实体纹理特性</span>
+                            <span class="mod-tag">飘扬披风</span>
+                            <span class="mod-tag">可视性粒子</span>
+                            <span class="mod-tag">落叶动画</span>
+                            <span class="mod-tag">物品栏粒子</span>
+                            <span class="mod-tag">可弯曲长方体</span>
+                            <span class="mod-tag">玩家动画库</span>
+                            <span class="mod-tag">实体渲染美化</span>
+                            <span class="mod-tag">越肩视角</span>
+                            <span class="mod-tag">细节护甲栏</span>
+                            <span class="mod-tag">高清截图</span>
+                            <span class="mod-tag">Ok Zoomer 缩放</span>
+                            <span class="mod-tag">动画 Logo</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 万物新生</span>
+                </div>
+
+                <!-- 卡片4：地图导航 -->
+                <div class="pixel-card" data-index="3">
+                    <div class="card-icon-block">🗺️</div>
+                    <div class="card-title-pixel">双地图导航</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">Xaero 大小地图全套，坐标标记、死亡点记录、维度切换，<em>单人服务器通用</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">地图模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">Xaero 世界地图</span>
+                            <span class="mod-tag">Xaero 小地图</span>
+                            <span class="mod-tag">地图缩放增强</span>
+                            <span class="mod-tag">世界地图汉化</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 星辰引路</span>
+                </div>
+
+                <!-- 卡片5：界面工具 -->
+                <div class="pixel-card" data-index="4">
+                    <div class="card-icon-block">👁️</div>
+                    <div class="card-title-pixel">便捷界面工具</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">JEI 查询、一键整理、提示框增强、F3 优化，<em>原版生存辅助不破坏玩法</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">界面辅助模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">JEI 物品管理器</span>
+                            <span class="mod-tag">玉 Jade 提示框</span>
+                            <span class="mod-tag">更好的 F3</span>
+                            <span class="mod-tag">更好的 Tab</span>
+                            <span class="mod-tag">模组菜单</span>
+                            <span class="mod-tag">潜影盒提示框</span>
+                            <span class="mod-tag">物品栏 HUD+</span>
+                            <span class="mod-tag">手持物品信息</span>
+                            <span class="mod-tag">一键背包整理</span>
+                            <span class="mod-tag">苹果皮</span>
+                            <span class="mod-tag">食物效果显示</span>
+                            <span class="mod-tag">键位冲突显示</span>
+                            <span class="mod-tag">鼠标手势</span>
+                            <span class="mod-tag">投影 Litematica</span>
+                            <span class="mod-tag">Tweakeroo 微调</span>
+                            <span class="mod-tag">聊天头像</span>
+                            <span class="mod-tag">更多聊天记录</span>
+                            <span class="mod-tag">禁用聊天举报</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 灵智之眼</span>
+                </div>
+
+                <!-- 卡片6：音效沉浸 -->
+                <div class="pixel-card" data-index="5">
+                    <div class="card-icon-block">🎵</div>
+                    <div class="card-title-pixel">沉浸式音效</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">环境音效、物理脚步声、洞穴混响全套声效模组，<em>大幅提升沉浸体验</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">音效模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">物理声效重制版</span>
+                            <span class="mod-tag">自然环境音</span>
+                            <span class="mod-tag">脚步声增强</span>
+                            <span class="mod-tag">简单语音聊天</span>
+                            <span class="mod-tag">Punchy 打击音效</span>
+                            <span class="mod-tag">音效引擎</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 风之低语</span>
+                </div>
+
+                <!-- 卡片7：修复稳定 -->
+                <div class="pixel-card" data-index="6">
+                    <div class="card-icon-block">🛡️</div>
+                    <div class="card-title-pixel">稳定修复组件</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">崩溃修复、传送门修正、输入法兼容、资源包警告移除，<em>稳定运行底层保障</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">修复类模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">崩溃漏洞修复</span>
+                            <span class="mod-tag">下界传送门修正</span>
+                            <span class="mod-tag">无资源包警告</span>
+                            <span class="mod-tag">服务器 Ping 修复</span>
+                            <span class="mod-tag">输入法冲突修复</span>
+                            <span class="mod-tag">语言重载</span>
+                            <span class="mod-tag">资源包检查器</span>
+                            <span class="mod-tag">Respackopts</span>
+                            <span class="mod-tag">快速资源包切换</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 守护之印</span>
+                </div>
+
+                <!-- 卡片8：角色美化 -->
+                <div class="pixel-card" data-index="7">
+                    <div class="card-icon-block">🦸</div>
+                    <div class="card-title-pixel">角色美化组件</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">3D 皮肤、动态披风、自定义皮肤加载，<em>联机服务器正常显示</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">角色模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">3D 皮肤层</span>
+                            <span class="mod-tag">飘扬披风</span>
+                            <span class="mod-tag">万用皮肤补丁</span>
+                            <span class="mod-tag">实体模型特性</span>
+                            <span class="mod-tag">实体纹理特性</span>
+                            <span class="mod-tag">表情工艺</span>
+                            <span class="mod-tag">女性角色模组</span>
+                            <span class="mod-tag">我的图腾娃娃</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 化身觉醒</span>
+                </div>
+
+                <!-- 卡片9：动态粒子 -->
+                <div class="pixel-card" data-index="8">
+                    <div class="card-icon-block">🌿</div>
+                    <div class="card-title-pixel">动态粒子效果</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">落叶、浮尘、星火、物品粒子系统，世界拥有呼吸感，<em>轻量化不占性能</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">粒子模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">可视性 Visuality</span>
+                            <span class="mod-tag">落叶动画</span>
+                            <span class="mod-tag">物品栏粒子</span>
+                            <span class="mod-tag">经验优化粒子</span>
+                            <span class="mod-tag">打击粒子效果</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 风与尘语</span>
+                </div>
+
+                <!-- 卡片10：趣味功能 -->
+                <div class="pixel-card" data-index="9">
+                    <div class="card-icon-block">✨</div>
+                    <div class="card-title-pixel">趣味拓展功能</div>
+                    <div class="card-divider-pixel"></div>
+                    <p class="card-desc">表情动作、基岩矿工、版本兼容、自定义菜单等趣味功能，<em>丰富游戏体验</em>。</p>
+                    <div class="mod-list">
+                        <div class="mod-list-title">趣味模组</div>
+                        <div class="mod-list-items">
+                            <span class="mod-tag">表情工艺 Emotecraft</span>
+                            <span class="mod-tag">基岩矿工</span>
+                            <span class="mod-tag">ViaFabricPlus</span>
+                            <span class="mod-tag">我是谁？</span>
+                            <span class="mod-tag">聊天工具箱</span>
+                            <span class="mod-tag">提示框滚动</span>
+                            <span class="mod-tag">物品描述</span>
+                            <span class="mod-tag">平滑转移</span>
+                            <span class="mod-tag">ClientID</span>
+                        </div>
+                    </div>
+                    <span class="card-codename"># 奇趣工坊</span>
+                </div>
+            </div>
+
+            <!-- 页脚 -->
+            <div class="footer-pixel">◆ 星牧·小晴空客户端 · 官方纯净生存服 ◆ 原版视觉性能增强套装 ◆ 欢迎冒险者结伴同行 ◆</div>
         </div>
     </div>
-    <div class="modal-overlay" id="modal-portal"><div class="modal-dialog"><div class="modal-title">◆ 圣物传送确认 ◆</div><div class="modal-text">即将开启传送门，前往<span class="highlight">夸克档案馆</span><br>获取本服务器专属的<span class="highlight">「小晴空」整合圣物</span><br>此物仅强化画面与声效，不改原版生存规则<br>是否确认开启传送？</div><div class="modal-buttons"><button class="modal-btn cancel" data-modal="modal-portal">◇ 暂缓启程 ◇</button><button class="modal-btn confirm" id="confirm-portal">◆ 开启传送 ◆</button></div></div></div>
-    <div class="modal-overlay" id="modal-qq"><div class="modal-dialog"><div class="modal-title">◆ 旅团通讯接入 ◆</div><div class="modal-text">即将连接到<span class="highlight">「小晴空」 冒险旅团</span><br>通讯频道：<span class="highlight">QQ 群聊阵列</span><br>加入后获取服务器地址、整合包帮助与最新动态<br>是否确认接入？</div><div class="modal-buttons"><button class="modal-btn cancel" data-modal="modal-qq">◇ 暂缓接入 ◇</button><button class="modal-btn confirm" id="confirm-qq">◆ 加入旅团 ◆</button></div></div></div>
+
+    <!-- 客户端下载弹窗 -->
+    <div class="modal-overlay" id="modal-portal">
+        <div class="modal-dialog">
+            <div class="modal-title">◆ 客户端下载确认 ◆</div>
+            <div class="modal-text">即将跳转夸克网盘<br>获取 <span class="highlight">小晴空客户端</span><br>内置全量 Mod、光影、材质资源<br>仅视觉性能增强，100% 兼容原版生存服<br>是否确认下载？</div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" data-modal="modal-portal">◇ 稍后再取 ◇</button>
+                <button class="modal-btn confirm" id="confirm-portal">◆ 前往下载 ◆</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 社群服务器弹窗 -->
+    <div class="modal-overlay" id="modal-qq">
+        <div class="modal-dialog">
+            <div class="modal-title">◆ 玩家社群接入 ◆</div>
+            <div class="modal-text">即将跳转 QQ 社群频道<br>加入 <span class="highlight">「小晴空冒险旅团」</span><br>获取服务器 IP、客户端安装教程、版本更新通知<br>玩家互助 & 活动同步发布<br>因个别原因，请搜索群号加入</div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" data-modal="modal-qq">◇ 暂缓加入 ◇</button>
+                <button class="modal-btn confirm" id="confirm-qq">912865429</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // ==============================================
-        // ✅ 基础功能（完全独立，永不崩溃）
-        // ==============================================
-        (function() {
-            // 1. 星空背景
-            const canvas = document.getElementById('star-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const stars = [];
-            const STAR_COUNT = 45;
+    /* ============================================================
+     *  星牧·小晴空客户端官网 核心脚本
+     * ============================================================
+     *  【配置信息 - 修改请在此处】
+     *  - 服务器地址: mcawa.xin
+     *  - 客户端下载链接(夸克): https://pan.quark.cn/s/f77f2b7e87c7
+     *  - QQ群链接: https://qun.qq.com/universal-share/share?ac=1&authKey=...
+     *  - B站主页: https://space.bilibili.com/
+     *  - 抖音主页: https://v.douyin.com/5KgdkcZAoE4/
+     *  - 客户端版本: v1.1.9
+     *  - 游戏版本: Minecraft JE 26.1.2
+     *  - 加载器: Fabric
+     *  - 模组总数: 130+
+     *
+     *  【功能模块清单】
+     *  1. 按钮充电动画 + 弹窗系统
+     *  2. 服务器状态实时检测 (mcstatus.io API)
+     *  3. QQ按钮高亮引导
+     *  4. 模组卡片展开/收起
+     *  5. 季节自动识别 + 季节卡片高亮
+     *  6. 季节标题随机闪烁彩蛋
+     *  7. 分季节标题轮换 (每2秒切换)
+     * ============================================================ */
+    (function() {
+        'use strict';
 
-            function resizeCanvas() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
+        // ===== 全局DOM元素 =====
+        const terminal = document.getElementById('terminal');
+        const mainTitle = document.getElementById('main-title');
+        const portalBtn = document.getElementById('portal-btn');
+        const qqBtn = document.getElementById('qq-btn');
+        const modalPortal = document.getElementById('modal-portal');
+        const modalQQ = document.getElementById('modal-qq');
+        const confirmPortal = document.getElementById('confirm-portal');
+        const confirmQQ = document.getElementById('confirm-qq');
 
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+        // ===== 配置常量（修改链接请改这里）=====
+        const PACK_DOWNLOAD_URL = 'https://pan.quark.cn/s/1cd7dd3fe80c';  // 客户端夸克网盘
+        const QQ_GROUP_URL = '';
+        const SERVER_ADDRESS = 'mcawa.xin';  // Minecraft 服务器地址
 
-            for (let i = 0; i < STAR_COUNT; i++) {
-                stars.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    size: Math.random() * 2 + 1,
-                    speed: Math.random() * 0.2 + 0.08,
-                    opacity: Math.random(),
-                    phase: Math.random() * 2 * Math.PI
-                });
-            }
+        let isCharging = false;
 
-            function drawStars(timestamp) {
-                ctx.clearRect(0, 0, w, h);
-                for (const star of stars) {
-                    const twinkle = Math.sin(timestamp * 0.0008 * star.speed * 3 + star.phase) * 0.35 + 0.65;
-                    const alpha = star.opacity * twinkle;
-                    ctx.fillStyle = `rgba(255,220,160,${alpha})`;
-                    ctx.fillRect(Math.floor(star.x), Math.floor(star.y), Math.ceil(star.size), Math.ceil(star.size));
-                }
-                requestAnimationFrame(drawStars);
-            }
+        // ===== 1. 按钮充电动画 =====
+        function startCharge(btn, modal, chargeClass) {
+            if (isCharging) return;
+            isCharging = true;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '链接建立中 ⌛';
+            btn.disabled = true;
+            btn.classList.add('charging');
+            terminal.classList.add(chargeClass);
+            mainTitle.classList.add('title-active');
 
-            requestAnimationFrame(drawStars);
+            setTimeout(() => { mainTitle.classList.remove('title-active'); }, 1600);
+            setTimeout(() => {
+                terminal.classList.remove(chargeClass);
+                btn.classList.remove('charging');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                isCharging = false;
+                modal.classList.add('active');
+            }, 1600);
+        }
 
-            // 2. 全局变量
-            const terminal = document.getElementById('terminal');
-            const mainTitle = document.getElementById('main-title');
-            const portalBtn = document.getElementById('portal-btn');
-            const qqBtn = document.getElementById('qq-btn');
-            const modalPortal = document.getElementById('modal-portal');
-            const modalQQ = document.getElementById('modal-qq');
-            const confirmPortal = document.getElementById('confirm-portal');
-            const confirmQQ = document.getElementById('confirm-qq');
-            const targetUrl = 'https://pan.quark.cn/s/f77f2b7e87c7';
-            const qqGroupUrl = 'https://qun.qq.com/universal-share/share?ac=1&authKey=ohmna7L10kOjvFCfa3%2Fwe2Y4lxzTASBlHOLso5r8idU%2FQlgFaPghYWRS8YzhhyTg&busi_data=eyJncm91cENvZGUiOiI1ODYxNzY3NzUiLCJ0b2tlbiI6ImV5S0xFNXNnUXlVMGJTTTVNcHVQRjRBNzNWR3dnam1mQnRsVGROTEVtemhKSzI3OTRqb1VrR3R4T2hsU05NV04iLCJ1aW4iOiIyMjQ1MzQxOTMzIn0%3D&data=f1uuHVHEedQBSBoYPWo5l6eX65tjwtxG5ir27f1QzIHrToreBA5aZmK6cABIvvIL7Kp2mM_kMDTCw-qp0SBw_Q&svctype=4&tempid=h5_group_info';
-            let isCharging = false;
+        // ===== 2. 弹窗控制 =====
+        function closeModal(modal) {
+            modal.classList.remove('active');
+        }
 
-            // 3. 按钮充电动画
-            function startCharge(btn, modal, chargeClass) {
-                if (isCharging) return;
-                isCharging = true;
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '建立链接中 ⌛';
-                btn.disabled = true;
-                btn.classList.add('charging');
-                terminal.classList.add(chargeClass);
-                mainTitle.classList.add('title-active');
+        // 按钮点击绑定
+        portalBtn.addEventListener('click', () => startCharge(portalBtn, modalPortal, 'powering-up-blue'));
+        qqBtn.addEventListener('click', () => startCharge(qqBtn, modalQQ, 'powering-up-pink'));
+        confirmPortal.addEventListener('click', () => {
+            window.open(PACK_DOWNLOAD_URL, '_blank');
+            closeModal(modalPortal);
+        });
+        confirmQQ.addEventListener('click', () => {
+            window.open(QQ_GROUP_URL, '_blank');
+            closeModal(modalQQ);
+        });
 
-                setTimeout(() => { mainTitle.classList.remove('title-active'); }, 1600);
-
-                setTimeout(() => {
-                    terminal.classList.remove(chargeClass);
-                    btn.classList.remove('charging');
-                    btn.innerHTML = originalHTML;
-                    btn.disabled = false;
-                    isCharging = false;
-                    modal.classList.add('active');
-                }, 1600);
-            }
-
-            // 4. 模态框控制
-            function closeModal(modal) {
-                modal.classList.remove('active');
-            }
-
-            // 5. 核心按钮事件
-            portalBtn.addEventListener('click', () => startCharge(portalBtn, modalPortal, 'powering-up-blue'));
-            qqBtn.addEventListener('click', () => startCharge(qqBtn, modalQQ, 'powering-up-pink'));
-
-            confirmPortal.addEventListener('click', () => {
-                window.open(targetUrl, '_blank');
-                closeModal(modalPortal);
+        // 取消按钮、遮罩、ESC关闭弹窗
+        document.querySelectorAll('.modal-btn.cancel').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                if (modal) closeModal(modal);
             });
-
-            confirmQQ.addEventListener('click', () => {
-                window.open(qqGroupUrl, '_blank');
-                closeModal(modalQQ);
+        });
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeModal(overlay);
             });
-
-            document.querySelectorAll('.modal-btn.cancel').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const modalId = this.getAttribute('data-modal');
-                    const modal = document.getElementById(modalId);
-                    if (modal) closeModal(modal);
-                });
-            });
-
-            document.querySelectorAll('.modal-overlay').forEach(overlay => {
-                overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) closeModal(overlay);
-                });
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m));
-                }
-            });
-
-            // 6. 服务器状态检测
-            const statusDot = document.getElementById('status-dot');
-            const statusText = document.getElementById('status-text');
-            const playerTag = document.getElementById('player-tag');
-            const playerText = document.getElementById('player-text');
-            const serverAddress = 'mcqk.cn';
-
-            async function checkServerStatus() {
-                function showOnline(online, max) {
-                    statusDot.style.background = '#5a5';
-                    statusDot.style.boxShadow = '0 0 10px #5a5';
-                    statusText.textContent = '生机勃勃';
-
-                    if (typeof online === 'number' && online > 0 && typeof max === 'number') {
-                        playerTag.style.display = 'flex';
-                        playerText.textContent = `${online} / ${max}`;
-                        if (online >= max) playerText.style.color = '#ff9999';
-                        else if (online > max * 0.7) playerText.style.color = '#ffcc66';
-                        else playerText.style.color = '#99ff99';
-                    } else if (typeof online === 'number' && online > 0) {
-                        playerTag.style.display = 'flex';
-                        playerText.textContent = `${online} 人在线`;
-                        playerText.style.color = '#99ff99';
-                    } else {
-                        playerTag.style.display = 'flex';
-                        playerText.textContent = '旅者隐匿';
-                        playerText.style.color = '#888';
-                    }
-                }
-
-                function showOffline() {
-                    statusDot.style.background = '#c55';
-                    statusDot.style.boxShadow = '0 0 10px #c55';
-                    statusText.textContent = '黯蚀笼罩';
-                    playerTag.style.display = 'none';
-                }
-
-                function showError() {
-                    statusDot.style.background = '#888';
-                    statusDot.style.boxShadow = '0 0 6px #888';
-                    statusText.textContent = '感知受阻';
-                    playerTag.style.display = 'none';
-                }
-
-                async function fetchJSON(url) {
-                    const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 5000);
-                    try {
-                        const res = await fetch(url, { signal: controller.signal });
-                        clearTimeout(timeout);
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        return await res.json();
-                    } catch (err) {
-                        return null;
-                    }
-                }
-
-                const data = await fetchJSON(`https://api.mcstatus.io/v2/status/java/${serverAddress}`);
-                if (!data) {
-                    showError();
-                    return;
-                }
-
-                if (data.online) {
-                    const online = data.players?.online;
-                    const max = data.players?.max;
-                    showOnline(online, max);
-                } else {
-                    showOffline();
-                }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m));
             }
+        });
 
-            checkServerStatus();
-            setInterval(checkServerStatus, 5000);
+        // ===== 3. 服务器状态实时检测 =====
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const playerTag = document.getElementById('player-tag');
+        const playerText = document.getElementById('player-text');
 
-            // 7. QQ提示按钮
-            const qqHintBtn = document.getElementById('qq-hint-btn');
-            if (qqHintBtn) {
-                qqHintBtn.addEventListener('click', function() {
-                    qqBtn.classList.remove('highlight-target');
-                    void qqBtn.offsetWidth;
-                    qqBtn.classList.add('highlight-target');
-                    qqBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    setTimeout(() => qqBtn.classList.remove('highlight-target'), 1800);
-                });
+        function showOnline(online, max) {
+            statusDot.style.background = '#5a5';
+            statusDot.style.boxShadow = '0 0 10px #5a5';
+            statusText.textContent = '在线运行';
+            playerTag.style.display = 'flex';
+            if (typeof online === 'number' && online > 0 && typeof max === 'number') {
+                playerText.textContent = `${online} / ${max} `;
+                if (online >= max) playerText.style.color = '#ff9999';
+                else if (online > max * 0.7) playerText.style.color = '#ffcc66';
+                else playerText.style.color = '#99ff99';
+            } else if (typeof online === 'number' && online > 0) {
+                playerText.textContent = `${online} 人探索中`;
+                playerText.style.color = '#99ff99';
+            } else {
+                playerText.textContent = '暂无在线玩家';
+                playerText.style.color = '#888';
             }
+        }
 
-            // 8. 像素卡片选择
-            const cards = document.querySelectorAll('.pixel-card');
-            let selected = null;
+        function showOffline() {
+            statusDot.style.background = '#c55';
+            statusDot.style.boxShadow = '0 0 10px #c55';
+            statusText.textContent = '离线维护';
+            playerTag.style.display = 'none';
+        }
 
-            cards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (selected === this) {
-                        this.classList.remove('selected');
-                        selected = null;
-                    } else {
-                        if (selected) selected.classList.remove('selected');
-                        this.classList.add('selected');
-                        selected = this;
-                    }
-                    e.stopPropagation();
-                });
+        function showError() {
+            statusDot.style.background = '#888';
+            statusDot.style.boxShadow = '0 0 6px #888';
+            statusText.textContent = '探测失败';
+            playerTag.style.display = 'none';
+        }
+
+        async function fetchJSON(url) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeout);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } catch (err) {
+                return null;
+            }
+        }
+
+        async function checkServerStatus() {
+            const data = await fetchJSON(`https://api.mcstatus.io/v2/status/java/${SERVER_ADDRESS}`);
+            if (!data) {
+                showError();
+                return;
+            }
+            if (data.online) {
+                const online = data.players?.online;
+                const max = data.players?.max;
+                showOnline(online, max);
+            } else {
+                showOffline();
+            }
+        }
+
+        checkServerStatus();
+        setInterval(checkServerStatus, 5000);
+
+        // ===== 4. QQ提示按钮高亮 =====
+        const qqHintBtn = document.getElementById('qq-hint-btn');
+        if (qqHintBtn) {
+            qqHintBtn.addEventListener('click', function() {
+                qqBtn.classList.remove('highlight-target');
+                void qqBtn.offsetWidth;
+                qqBtn.classList.add('highlight-target');
+                qqBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => qqBtn.classList.remove('highlight-target'), 1800);
             });
+        }
 
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.pixel-card') && selected) {
-                    selected.classList.remove('selected');
+        // ===== 5. 模组卡片展开/收起 =====
+        const cards = document.querySelectorAll('.pixel-card');
+        let selected = null;
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (selected === this) {
+                    this.classList.remove('selected');
                     selected = null;
+                } else {
+                    if (selected) selected.classList.remove('selected');
+                    this.classList.add('selected');
+                    selected = this;
+                }
+                e.stopPropagation();
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.pixel-card') && selected) {
+                selected.classList.remove('selected');
+                selected = null;
+            }
+        });
+
+        // ===== 6. 季节自动识别 + 高亮 =====
+        function getCurrentSeason() {
+            const m = new Date().getMonth() + 1;
+            if (m >= 3 && m <= 5) return 'spring';
+            if (m >= 6 && m <= 8) return 'summer';
+            if (m >= 9 && m <= 11) return 'autumn';
+            return 'winter';
+        }
+
+        function highlightCurrentSeason() {
+            const currentSeason = getCurrentSeason();
+            const seasons = [
+                { id: 'season-spring', name: '春季', key: 'spring' },
+                { id: 'season-summer', name: '夏季', key: 'summer' },
+                { id: 'season-autumn', name: '秋季', key: 'autumn' },
+                { id: 'season-winter', name: '冬季', key: 'winter' }
+            ];
+            for (const s of seasons) {
+                const el = document.getElementById(s.id);
+                if (el) {
+                    const nameSpan = el.querySelector('.season-name');
+                    if (s.key === currentSeason) {
+                        nameSpan.textContent = s.name;
+                        el.classList.add('active');
+                    } else {
+                        nameSpan.textContent = 'XX';
+                        el.classList.remove('active');
+                    }
+                }
+            }
+        }
+
+        highlightCurrentSeason();
+        setInterval(highlightCurrentSeason, 30000);
+
+        // ===== 7. 季节标题闪烁彩蛋 =====
+        const flashConfig = {
+            autoFlashProbability: 0.03,
+            clickFlashProbability: 0.5,
+            checkIntervalMin: 15000,
+            checkIntervalMax: 30000,
+            flashDuration: 1000
+        };
+        const SEASON_KEY = { spring: "浅草", summer: "流萤", autumn: "落照", winter: "寒酥" };
+        const SEASON_PREFIX = { spring: "古神低语", summer: "遗迹回响", autumn: "虚空铭文", winter: "命运启示" };
+        let flashTimer = null;
+        let flashOriginalTitle = null;
+
+        function flashSeasonKey() {
+            if (flashTimer) return;
+            const season = getCurrentSeason();
+            const key = SEASON_KEY[season];
+            if (!key) return;
+            flashOriginalTitle = mainTitle.textContent;
+            mainTitle.textContent = `${SEASON_PREFIX[season]}·${key}`;
+            mainTitle.style.opacity = '1';
+            flashTimer = setTimeout(() => {
+                if (flashOriginalTitle) {
+                    mainTitle.textContent = flashOriginalTitle;
+                    flashOriginalTitle = null;
+                }
+                flashTimer = null;
+            }, flashConfig.flashDuration);
+        }
+
+        function startAutoFlash() {
+            const interval = flashConfig.checkIntervalMin + Math.random() * (flashConfig.checkIntervalMax - flashConfig.checkIntervalMin);
+            setTimeout(() => {
+                if (Math.random() < flashConfig.autoFlashProbability) {
+                    flashSeasonKey();
+                }
+                startAutoFlash();
+            }, interval);
+        }
+        startAutoFlash();
+
+        document.querySelectorAll('.season-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (Math.random() < flashConfig.clickFlashProbability) {
+                    flashSeasonKey();
                 }
             });
+        });
 
-            // 9. 季节闪烁彩蛋
-            const flashConfig = {
-                autoFlashProbability: 0.03,
-                clickFlashProbability: 0.5,
-                checkIntervalMin: 15000,
-                checkIntervalMax: 30000,
-                flashDuration: 1000
-            };
+        // ===== 8. 分季节标题轮换（每2秒切换）=====
+        const seasonTitles = {
+            spring: ['星牧·初芽','星牧·绿潮','星牧·花咒','星牧·春醒','星牧·林径','星牧·小晴空','星牧·荆棘冠','星牧·复苏歌','星牧·鹿鸣涧','星牧·迷雾种','星牧·风之信标','星牧·生命祭坛','星牧·原初之息','星牧·翠色协议','星牧·破晓远征'],
+            summer: ['星牧·炎息','星牧·沙暴','星牧·熔核','星牧·烈芒','星牧·雷鼓','星牧·火蛇舞','星牧·小晴空','星牧·龙巢热','星牧·雷暴核','星牧·蝉剑鸣','星牧·烈日祭坛','星牧·赤沙遗迹','星牧·炎魔之眼','星牧·雷霆堡垒','星牧·狂战士营'],
+            autumn: ['星牧·金雨','星牧·枯骨','星牧·猎月','星牧·丰碑','星牧·锈刃','星牧·亡者醉','星牧·金币叶','星牧·小晴空','星牧·凋零颂','星牧·黄昏猎','星牧·丰收祭典','星牧·魂引灯笼','星牧·堕落王座','星牧·秘银落叶','星牧·暮光决斗'],
+            winter: ['星牧·霜卫','星牧·永夜','星牧·寒渊','星牧·冰棘','星牧·寂塔','星牧·冰龙息','星牧·小晴空','星牧·极光剑','星牧·雪怪嚎','星牧·落幕曲','星牧·冰封王座','星牧·凛冬领主','星牧·永夜庇护所','星牧·极光魔杖','星牧·最终誓约']
+        };
 
-            const SEASON_KEY = { spring: "浅草", summer: "流萤", autumn: "落照", winter: "寒酥" };
-            let flashTimer = null;
-            let originalTitleText = null;
+        // 剩余索引池：每个季节独立，保证不重复
+        const remainingIndexes = {
+            spring: [],
+            summer: [],
+            autumn: [],
+            winter: []
+        };
 
-            function getSeasonPrefix(season) { 
-                const m = { spring: "古神低语", summer: "遗迹回响", autumn: "虚空铭文", winter: "命运启示" }; 
-                return m[season] || "天启"; 
+        function rotateTitle() {
+            const currentSeason = getCurrentSeason();
+            const titles = seasonTitles[currentSeason];
+
+            // 如果当前季节的索引池空了，重新填充
+            if (remainingIndexes[currentSeason].length === 0) {
+                remainingIndexes[currentSeason] = Array.from({ length: titles.length }, (_, i) => i);
             }
 
-            function getCurrentSeasonForFlash() { 
-                const m = new Date().getMonth() + 1; 
-                if (m >= 3 && m <= 5) return 'spring'; 
-                if (m >= 6 && m <= 8) return 'summer'; 
-                if (m >= 9 && m <= 11) return 'autumn'; 
-                return 'winter'; 
-            }
+            // 从剩余索引中随机取一个
+            const randomPos = Math.floor(Math.random() * remainingIndexes[currentSeason].length);
+            const selectedIndex = remainingIndexes[currentSeason].splice(randomPos, 1)[0];
 
-            function flashSeasonKey() {
-                if (flashTimer) return;
-                const season = getCurrentSeasonForFlash();
-                const key = SEASON_KEY[season];
-                if (!key) return;
+            // 淡入淡出切换标题
+            mainTitle.style.opacity = 0;
+            setTimeout(() => {
+                mainTitle.textContent = titles[selectedIndex];
+                mainTitle.style.opacity = 1;
+            }, 600);
+        }
 
-                originalTitleText = mainTitle.textContent;
-                mainTitle.textContent = `${getSeasonPrefix(season)}·${key}`;
-                mainTitle.style.opacity = '1';
+        setInterval(rotateTitle, 2000);
 
-                flashTimer = setTimeout(() => { 
-                    if (originalTitleText) { 
-                        mainTitle.textContent = originalTitleText; 
-                        originalTitleText = null; 
-                    } 
-                    flashTimer = null; 
-                }, flashConfig.flashDuration);
-            }
-
-            function startAutoFlash() {
-                const interval = flashConfig.checkIntervalMin + Math.random() * (flashConfig.checkIntervalMax - flashConfig.checkIntervalMin);
-                setTimeout(() => {
-                    if (Math.random() < flashConfig.autoFlashProbability) {
-                        flashSeasonKey();
-                    }
-                    startAutoFlash();
-                }, interval);
-            }
-
-            startAutoFlash();
-
-            function highlightCurrentSeason() {
-                const month = new Date().getMonth() + 1;
-                let currentSeason = '';
-                if (month >= 3 && month <= 5) currentSeason = 'spring';
-                else if (month >= 6 && month <= 8) currentSeason = 'summer';
-                else if (month >= 9 && month <= 11) currentSeason = 'autumn';
-                else currentSeason = 'winter';
-
-                document.getElementById('currentSeasonLabel').textContent = `✦ 当前季节 ✦`;
-
-                const seasons = [
-                    { id: 'season-spring', name: '春季', key: 'spring' },
-                    { id: 'season-summer', name: '夏季', key: 'summer' },
-                    { id: 'season-autumn', name: '秋季', key: 'autumn' },
-                    { id: 'season-winter', name: '冬季', key: 'winter' }
-                ];
-
-                for (const s of seasons) {
-                    const el = document.getElementById(s.id);
-                    if (el) {
-                        const nameSpan = el.querySelector('.season-name');
-                        if (s.key === currentSeason) { 
-                            nameSpan.textContent = s.name; 
-                            el.classList.add('active'); 
-                        } else { 
-                            nameSpan.textContent = 'XX'; 
-                            el.classList.remove('active'); 
-                        }
-                    }
-                }
-            }
-
-            highlightCurrentSeason();
-            setInterval(highlightCurrentSeason, 30000);
-
-            document.querySelectorAll('.season-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    if (Math.random() < flashConfig.clickFlashProbability) {
-                        flashSeasonKey();
-                    }
-                });
-            });
-
-            // 10. 分季节标题轮换
-            const seasonTitles = {
-                spring: ['星牧·初芽','星牧·绿潮','星牧·花咒','星牧·春醒','星牧·林径','星牧·小晴空','星牧·荆棘冠','星牧·复苏歌','星牧·鹿鸣涧','星牧·迷雾种','星牧·风之信标','星牧·生命祭坛','星牧·原初之息','星牧·翠色协议','星牧·破晓远征'],
-                summer: ['星牧·炎息','星牧·沙暴','星牧·熔核','星牧·烈芒','星牧·雷鼓','星牧·火蛇舞','星牧·小晴空','星牧·龙巢热','星牧·雷暴核','星牧·蝉剑鸣','星牧·烈日祭坛','星牧·赤沙遗迹','星牧·炎魔之眼','星牧·雷云堡垒','星牧·狂战士营'],
-                autumn: ['星牧·金雨','星牧·枯骨','星牧·猎月','星牧·丰碑','星牧·锈刃','星牧·亡者醉','星牧·金币叶','星牧·小晴空','星牧·凋零颂','星牧·黄昏猎','星牧·丰收祭典','星牧·魂引灯笼','星牧·堕落王座','星牧·秘银落叶','星牧·暮光决斗'],
-                winter: ['星牧·霜卫','星牧·永夜','星牧·寒渊','星牧·冰棘','星牧·寂塔','星牧·冰龙息','星牧·小晴空','星牧·极光剑','星牧·雪怪嚎','星牧·落幕曲','星牧·冰封王座','星牧·凛冬领主','星牧·永夜庇护所','星牧·极光魔杖','星牧·最终誓约']
-            };
-
-            const remainingIndexes = {
-                spring: [],
-                summer: [],
-                autumn: [],
-                winter: []
-            };
-
-            function getCurrentSeason() {
-                const m = new Date().getMonth() + 1;
-                if (m >= 3 && m <= 5) return 'spring';
-                if (m >= 6 && m <= 8) return 'summer';
-                if (m >= 9 && m <= 11) return 'autumn';
-                return 'winter';
-            }
-
-            function rotateTitle() {
-                const currentSeason = getCurrentSeason();
-                const titles = seasonTitles[currentSeason];
-                
-                if (remainingIndexes[currentSeason].length === 0) {
-                    remainingIndexes[currentSeason] = Array.from({ length: titles.length }, (_, i) => i);
-                }
-                
-                const randomPos = Math.floor(Math.random() * remainingIndexes[currentSeason].length);
-                const selectedIndex = remainingIndexes[currentSeason].splice(randomPos, 1)[0];
-                
-                mainTitle.style.opacity = 0;
-                setTimeout(() => {
-                    mainTitle.textContent = titles[selectedIndex];
-                    mainTitle.style.opacity = 1;
-                }, 600);
-            }
-
-            setInterval(rotateTitle, 2000);
-
-            console.log("✅ 基础功能加载完成！所有按钮和服务器状态已正常工作");
-        })();
+        console.log("✅ 星牧·小晴空客户端官网 | 所有功能加载完成");
+        console.log("📦 客户端版本: v1.1.9 | 游戏版本: JE 26.1.2 | 加载器: Fabric");
+        console.log("🎮 服务器地址: " + SERVER_ADDRESS + " | 状态检测: 已启用");
+    })();
     </script>
 </body>
 </html>
